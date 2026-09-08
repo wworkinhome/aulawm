@@ -63,3 +63,18 @@ risk it avoids, at this project's scale.
 - If/when RLS is adopted as an additional defense-in-depth layer, it must be
   designed against the same authorization rules already enforced in NestJS — not
   as a replacement for them.
+
+**Gotcha found running migrations locally (2026-09-08)**: Supabase's *direct*
+Postgres connection host (`db.<ref>.supabase.co`) resolves **IPv6-only** unless
+the project has paid for the IPv4 add-on — it has no `A` record at all, only
+`AAAA`. On a network without IPv6 egress (this happened mid-session), that
+connection fails outright with `ENOTFOUND`, not a slow timeout, so it looks
+like a DNS/typo problem rather than an IPv6 issue. **Use the connection
+pooler instead** (`aws-0-<region>.pooler.supabase.com`, user
+`postgres.<project-ref>`, same password) — it resolves over IPv4 and works
+everywhere. `DATABASE_URL` in both `apps/api/.env` and the Render service's
+env vars now uses the session-pooler form (port `5432`, not the `6543`
+transaction-pooler port — a long-lived NestJS server benefits from session
+semantics like prepared statements, unlike a serverless/transaction
+workload). Any future migration-runner script should default to the pooler
+too, not the direct host.

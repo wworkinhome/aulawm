@@ -86,13 +86,21 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   render a shared `ComingSoon` component instead of dead links or 404s.
   Verified in-browser with both seeded accounts, including sign-out and
   active-state highlighting while navigating.
-- [ ] Cursos, módulos, clases (video/lectura/lab/quiz), recursos, apuntes,
-  progreso_clase. `cursos` now has an RLS policy (docente sees their own,
-  estudiante sees courses of groups they're actively enrolled in — added
-  and verified 2026-09-08 after `/panel`'s course count read 0 without it,
-  per [TD-015](TECHNICAL_DEBT.md)'s "write it when you first need it" rule).
-  `modulos`/`clases`/`recursos` still have none — same rule applies when
-  the course detail page is built.
+- [x] **Mis cursos + detalle de curso** (estudiante): `/cursos` lists
+  enrolled courses with a per-course progress bar (published clases vs.
+  the student's own `progreso_clase` rows); `/cursos/[id]` shows the
+  módulos/clases accordion (type badge, duration, completion dot) and a
+  docente card. RLS policies for `cursos`, `modulos`, and `clases` added
+  and verified live (see [TD-015](TECHNICAL_DEBT.md)'s "write it when you
+  first need it" rule in practice, three times over). Also found and fixed:
+  the original `perfil_propio` policy let a docente read any perfil but
+  never let a *student* read their own docente's — PostgREST silently
+  returned `perfiles: null` in the embed instead of an error, so the
+  teacher's name just disappeared until a `perfil_docente_visible` policy
+  was added. `recursos`/`asignaciones`/`progreso_clase` writes (marking a
+  clase watched) are still not built — this phase's next slice.
+- [ ] Actividades, recursos, apuntes (writing progreso_clase on watch,
+  file resources, teacher-authored asignaciones).
 - [ ] Asignaciones + entregas (file submission via `POST /storage/url-subida` +
   `POST /asignaciones/:id/entregas`), teacher review/feedback.
 - [ ] Gradebook: `ponderaciones`, `calificaciones`, `notas_definitivas` (trigger-
