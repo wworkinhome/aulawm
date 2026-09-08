@@ -17,6 +17,16 @@ Postgres connection — see [ADR-0012](docs/adr/0012-raw-sql-migrations.md)):
 3. `20260101000002_storage_buckets.sql` — `material`/`entregas`/`avatares`,
    all private.
 4. `20260101000003_fix_custom_access_token_hook.sql` — see below.
+5. `20260101000004_add_missing_rls_policies.sql` — `roles_usuario`,
+   `matriculas`, `grupos` had RLS enabled with no policy at all (denied
+   everyone, including the row's own owner); added the missing
+   own-row/own-group policies.
+6. `20260101000005_grant_authenticated_table_access.sql` — every table
+   lacked the base `GRANT` to `authenticated`/`anon` that RLS depends on;
+   see [ADR-0008](docs/adr/0008-hybrid-data-access.md) for why a correct RLS
+   policy alone wasn't enough. Also see `supabase/seed.sql` for the
+   dev/test data (one docente, two estudiantes, one curso) used to verify
+   all of this against a real login, not just a service-role script.
 
 The **Customize Access Token (JWT) Claims** hook is registered (Authentication
 → Hooks) against `public.custom_access_token_hook`. Verified end to end

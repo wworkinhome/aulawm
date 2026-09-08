@@ -160,3 +160,39 @@ section with the date, don't just delete it).
 - **Risk**: Low now (development/testing only), real before any live usage.
 - **Priority**: Revisit before Phase 1 sign-off — either confirm Railway's
   plan issue is resolved and migrate, or upgrade Render to a paid plan.
+
+### TD-015: Most tables still have RLS enabled but no policy at all
+- **Description**: Only the tables needed for the login vertical slice
+  (`perfiles`, `roles_usuario`, `matriculas`, `grupos`, plus what the
+  initial migration already covered — `apuntes`, `progreso_clase`,
+  `intentos`, etc.) have RLS policies. Everything else with `enable row
+  level security` but no policy — `cursos`, `modulos`, `clases`, `recursos`,
+  `examenes`, `resultados_competencia`, `entrega_archivos`,
+  `insignias_usuario`, `xp_eventos`, `rachas`, `consentimientos` — denies
+  all direct-Supabase access by default (safe failure mode, per
+  [ADR-0008](docs/adr/0008-hybrid-data-access.md)'s "decide deliberately per
+  table" rule), which also means **no one can read them directly yet, not
+  even their owner**.
+- **Impact**: Building any Phase 1/2 feature against these tables (course
+  listing, module/lesson content, etc.) will hit the same "permission
+  denied" surprise found today with `perfiles`/`matriculas` until each
+  table's RLS policy is written and tested with a real logged-in request —
+  not just reasoned about.
+- **Risk**: Low (fails closed, not open) but will block feature work
+  repeatedly if not anticipated.
+- **Priority**: Write the RLS policy for each table as part of the PR that
+  first needs to read it — per the [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md)
+  "New or changed table" section — rather than batching it later.
+
+## Resolved (continued)
+
+### TD (resolved 2026-09-08): Tables lacked base GRANTs to `authenticated`/`anon`
+- **Resolution**: Found testing the real login end to end — every table had
+  RLS enabled but no base `GRANT` to the `authenticated`/`anon` Postgres
+  roles, so PostgREST returned `permission denied for table X` regardless of
+  how permissive the RLS policy was (RLS restricts an access the role
+  already has; it doesn't substitute for the grant). Fixed globally via
+  `supabase/migrations/20260101000005_grant_authenticated_table_access.sql`
+  (`grant ... on all tables in schema public` + `alter default privileges`
+  so future tables get it automatically). See
+  [ADR-0008](docs/adr/0008-hybrid-data-access.md) for the full explanation.

@@ -46,6 +46,25 @@ Trust violation:
   `labs` policies: comments call out that these must go through Nest or a
   column-restricted view, never a raw table read).
 
+**A RLS policy alone is not enough to make a table directly readable —**
+confirmed the hard way testing the real login (2026-09-08): every table in
+this schema had `enable row level security` but no base `GRANT` to the
+`authenticated`/`anon` Postgres roles. Without that grant, PostgREST fails
+with `permission denied for table X` *before RLS is even evaluated* — a
+correct, permissive RLS policy on a table nobody has been granted access to
+still returns nothing but a permission error. Fixed globally in
+[20260101000005_grant_authenticated_table_access.sql](../../supabase/migrations/20260101000005_grant_authenticated_table_access.sql)
+by granting `select, insert, update, delete` to `authenticated` (and
+`select` to `anon`) across the whole `public` schema — matching what
+Supabase's own Table Editor does automatically when you create a table
+through the dashboard, which raw-SQL migrations don't get for free. **RLS is
+now the only real access-control layer**, exactly as intended; the grant is
+just the prerequisite that makes RLS reachable at all. Anyone adding a new
+table via a raw SQL migration should not need to repeat this grant (the
+`alter default privileges` in that migration covers future tables too), but
+it's worth knowing why if a fresh table ever mysteriously 403s despite a
+correct policy.
+
 ## Alternatives considered
 
 - **All reads and writes through Nest** (the originally proposed stricter

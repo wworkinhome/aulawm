@@ -20,6 +20,13 @@ calling the feature done — this is the security half of the project's
 - [ ] Domain writes to this table go through Nest (service-role key bypasses
       RLS) with an explicit ownership/business-rule check in code — RLS is
       never assumed to protect the write path
+- [ ] Tested with a real logged-in (non-service-role) request, not just "the
+      policy looks right" — a table can have a correct RLS policy and still
+      return `permission denied` if it lacks the base `GRANT` to
+      `authenticated`/`anon` that RLS depends on (see
+      [ADR-0008](docs/adr/0008-hybrid-data-access.md)). New tables get this
+      for free via `alter default privileges`; only relevant if that default
+      was ever changed
 
 ## Every endpoint
 

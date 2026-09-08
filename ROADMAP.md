@@ -46,11 +46,22 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   storage buckets, a hook bug fix), hook registered in the dashboard, and
   the whole login → JWKS-verify → role-gate pipeline confirmed end to end
   against real infrastructure with a throwaway test user.
+- [x] **Real login page** (`apps/web/src/app/(auth)/login`), wired to
+  Supabase Auth via `@supabase/ssr` (browser + server clients,
+  `proxy.ts` for session refresh and route protection — Next.js 16's
+  rename of `middleware.ts`). Verified end to end in a real browser with
+  both seeded test accounts (docente and estudiante), including sign-out.
+  A protected `/inicio` page reads the logged-in user's own profile
+  directly from Supabase (RLS-scoped, per ADR-0008) and renders their
+  name/role — the first real example of the hybrid data-access pattern
+  in actual frontend code, not just documented intent.
+- [x] Seeded realistic dev/test data (`supabase/seed.sql`): one docente,
+  two estudiantes with active matrículas in one grupo, one curso with
+  2 módulos/3 clases. Credentials in the seed file's header comment.
 - [ ] Auth: registration business logic — `POST /auth/registro` creating
   `matriculas.estado = 'pendiente'`, the teacher/coordination approval
-  endpoint, password reset UI. The underlying Supabase Auth + hook
-  infrastructure is live and verified; this is the remaining application
-  logic on top of it.
+  endpoint, password reset UI. Login itself is done; this is the
+  remaining onboarding flow on top of it.
 - [x] `JwtSupabaseGuard` (JWKS-based, not the HS256 secret ADR-0009 originally
   assumed — see the architecture doc's live-infrastructure note) +
   `RolesGuard` + `@CurrentUser()`/`@Public()`/`@Roles()` decorators
