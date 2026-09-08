@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#141210;color:#F5F2EC;font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#C6FF3D;text-decoration:none}
+a:hover{color:#7C5CFF}
+::selection{background:#7C5CFF;color:#fff}
+@keyframes pulseDot{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
+@keyframes sweep{0%{transform:translateX(-110%)}100%{transform:translateX(110%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.om-sb::-webkit-scrollbar{width:8px;height:8px}
+.om-sb::-webkit-scrollbar-thumb{background:rgba(245,242,236,.16);border-radius:8px}
+.om-sb::-webkit-scrollbar-track{background:transparent}
+</style>
+</helmet>
+
+<sc-if value="{{ isAuth }}">
+<div style="min-height:100vh;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+  <div style="min-width:0;padding:44px 40px;display:flex;flex-direction:column;justify-content:space-between;background:#0E0C0B;background-image:radial-gradient(760px 420px at 12% 8%,rgba(124,92,255,.32),transparent 62%),radial-gradient(620px 380px at 92% 96%,rgba(198,255,61,.14),transparent 60%);border-right:1px solid rgba(245,242,236,.09)">
+    <div style="display:flex;align-items:center;gap:11px">
+      <div style="width:34px;height:34px;border-radius:10px;background:#7C5CFF;display:grid;place-items:center;font:800 15px/1 Archivo,sans-serif;color:#fff">W</div>
+      <div style="font:700 15px/1.1 Archivo,sans-serif">Aula<span style="color:#7C5CFF">WM</span></div>
+    </div>
+    <div style="padding:40px 0">
+      <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.18em;color:#C6FF3D;text-transform:uppercase">Media técnica · Sistemas de información</div>
+      <h1 style="margin:16px 0 0;font:900 clamp(34px,4.6vw,58px)/1 Archivo,sans-serif;letter-spacing:-.045em;max-width:16ch;text-wrap:pretty">Aprende haciendo.<br>Evalúate como en el ICFES.</h1>
+      <div style="margin-top:20px;font:400 14px/1.7 Archivo,sans-serif;color:rgba(245,242,236,.72);max-width:44ch;text-wrap:pretty">Cursos, laboratorios de programación y ofimática, simulacros cronometrados y material de apoyo del profesor Wilmer Mosquera.</div>
+      <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:8px">
+        <span style="padding:7px 13px;border-radius:20px;border:1px solid rgba(245,242,236,.18);font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.75)">40 labs</span>
+        <span style="padding:7px 13px;border-radius:20px;border:1px solid rgba(245,242,236,.18);font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.75)">480 preguntas ICFES</span>
+        <span style="padding:7px 13px;border-radius:20px;border:1px solid rgba(245,242,236,.18);font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.75)">Excel · SQL · React</span>
+      </div>
+    </div>
+    <div style="font:500 10.5px/1.6 'Azeret Mono',monospace;color:rgba(245,242,236,.55)">I.E. — Quibdó, Chocó · 2026</div>
+  </div>
+
+  <div style="min-width:0;padding:44px 40px;display:flex;align-items:center;justify-content:center">
+    <div style="width:100%;max-width:404px">
+
+      <sc-if value="{{ isLogin }}">
+      <div>
+        <h2 style="margin:0;font:800 28px/1.1 Archivo,sans-serif;letter-spacing:-.03em">Entra a tu aula</h2>
+        <div style="margin-top:9px;font:400 13px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.7)">Usa el correo institucional que te asignó el colegio.</div>
+        <div style="margin-top:26px;display:flex;flex-direction:column;gap:13px">
+          <div>
+            <div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Correo</div>
+            <input placeholder="sara.mena@colegio.edu.co" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif">
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Contraseña</div>
+              <span onClick="{{ goForgot }}" style="font:600 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D;cursor:pointer">¿La olvidaste?</span>
+            </div>
+            <div style="margin-top:7px;display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13)">
+              <input type="password" placeholder="••••••••" style="flex:1;min-width:0;background:transparent;border:0;outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif">
+              <span style="font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6);cursor:pointer">VER</span>
+            </div>
+          </div>
+          <div onClick="{{ toggleRemember }}" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:2px 0">
+            <span style="{{ remTrack }}"><span style="{{ remKnob }}"></span></span>
+            <span style="font:500 12px/1.3 Archivo,sans-serif;color:rgba(245,242,236,.78)">Mantener la sesión en este equipo</span>
+          </div>
+          <div onClick="{{ goHome }}" style="margin-top:6px;text-align:center;padding:14px;border-radius:11px;background:#C6FF3D;color:#141210;font:700 13.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="background:#d6ff6b">Ingresar</div>
+          <div style="display:flex;align-items:center;gap:12px;margin:4px 0"><span style="flex:1;height:1px;background:rgba(245,242,236,.12)"></span><span style="font:600 9.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.55)">O BIEN</span><span style="flex:1;height:1px;background:rgba(245,242,236,.12)"></span></div>
+          <div onClick="{{ goHome }}" style="text-align:center;padding:13px;border-radius:11px;border:1px solid rgba(245,242,236,.16);font:600 13px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">Continuar con la cuenta del colegio</div>
+          <div onClick="{{ goTeacherLogin }}" style="text-align:center;padding:13px;border-radius:11px;border:1px solid rgba(124,92,255,.4);background:rgba(124,92,255,.1);font:600 13px/1 Archivo,sans-serif;cursor:pointer">Soy docente</div>
+        </div>
+        <div style="margin-top:22px;text-align:center;font:400 12.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.7)">¿Primera vez aquí? <span onClick="{{ goRegister }}" style="color:#C6FF3D;font-weight:600;cursor:pointer">Crea tu cuenta</span></div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isRegister }}">
+      <div>
+        <h2 style="margin:0;font:800 28px/1.1 Archivo,sans-serif;letter-spacing:-.03em">Crea tu cuenta</h2>
+        <div style="margin-top:9px;font:400 13px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.7)">Paso 1 de 2 · datos del estudiante</div>
+        <div style="margin-top:16px;display:flex;gap:6px">
+          <span style="flex:1;height:4px;border-radius:3px;background:#7C5CFF"></span>
+          <span style="flex:1;height:4px;border-radius:3px;background:rgba(245,242,236,.14)"></span>
+        </div>
+        <div style="margin-top:24px;display:flex;flex-direction:column;gap:13px">
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Nombres</div><input placeholder="Sara" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif"></div>
+            <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Apellidos</div><input placeholder="Mena Palacios" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif"></div>
+          </div>
+          <div><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Correo institucional</div><input placeholder="sara.mena@colegio.edu.co" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif"></div>
+          <div>
+            <div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Grado y grupo</div>
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ grades }}" as="g" hint-placeholder-count="6">
+                <div onClick="{{ g.go }}" style="{{ g.style }}">{{ g.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Contraseña</div>
+            <input type="password" placeholder="Mínimo 8 caracteres" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif">
+            <div style="margin-top:9px;display:flex;gap:5px">
+              <span style="flex:1;height:3px;border-radius:2px;background:#C6FF3D"></span><span style="flex:1;height:3px;border-radius:2px;background:#C6FF3D"></span><span style="flex:1;height:3px;border-radius:2px;background:#C6FF3D"></span><span style="flex:1;height:3px;border-radius:2px;background:rgba(245,242,236,.14)"></span>
+            </div>
+            <div style="margin-top:7px;font:400 11px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.6)">Añade un número o símbolo para que sea fuerte.</div>
+          </div>
+          <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;border-radius:11px;background:rgba(245,242,236,.04)">
+            <span style="flex:none;width:18px;height:18px;border-radius:5px;background:#C6FF3D;color:#141210;display:grid;place-items:center;font:700 10px/1 'Azeret Mono',monospace">✓</span>
+            <span style="font:400 11.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.72)">Acepto el tratamiento de datos y el reglamento de uso del aula virtual.</span>
+          </div>
+          <div onClick="{{ goHome }}" style="text-align:center;padding:14px;border-radius:11px;background:#C6FF3D;color:#141210;font:700 13.5px/1 Archivo,sans-serif;cursor:pointer">Continuar</div>
+        </div>
+        <div style="margin-top:20px;text-align:center;font:400 12.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.7)">¿Ya tienes cuenta? <span onClick="{{ goLogin }}" style="color:#C6FF3D;font-weight:600;cursor:pointer">Inicia sesión</span></div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isForgot }}">
+      <div>
+        <div style="width:44px;height:44px;border-radius:13px;background:rgba(124,92,255,.16);border:1px solid rgba(124,92,255,.4);display:grid;place-items:center;font:400 18px/1 Archivo,sans-serif;color:#7C5CFF">⟳</div>
+        <h2 style="margin:18px 0 0;font:800 28px/1.1 Archivo,sans-serif;letter-spacing:-.03em">Recupera tu acceso</h2>
+        <div style="margin-top:9px;font:400 13px/1.65 Archivo,sans-serif;color:rgba(245,242,236,.7);text-wrap:pretty">Escribe tu correo institucional y te enviamos un enlace para crear una contraseña nueva. El enlace vence en 30 minutos.</div>
+        <div style="margin-top:24px;display:flex;flex-direction:column;gap:13px">
+          <div><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:rgba(245,242,236,.7);text-transform:uppercase">Correo</div><input placeholder="sara.mena@colegio.edu.co" style="margin-top:7px;width:100%;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.13);outline:0;color:#F5F2EC;font:400 13.5px/1.2 Archivo,sans-serif"></div>
+          <div onClick="{{ sendReset }}" style="text-align:center;padding:14px;border-radius:11px;background:#7C5CFF;color:#fff;font:700 13.5px/1 Archivo,sans-serif;cursor:pointer">Enviar enlace</div>
+        </div>
+        <sc-if value="{{ resetSent }}">
+          <div style="margin-top:16px;padding:15px;border-radius:12px;background:rgba(198,255,61,.1);border:1px solid rgba(198,255,61,.36)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#C6FF3D;text-transform:uppercase">Enviado</div>
+            <div style="margin-top:8px;font:400 12.5px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.85);text-wrap:pretty">Revisa tu bandeja. Si no llega en 5 minutos, mira la carpeta de correo no deseado o escríbele al profesor Mosquera.</div>
+          </div>
+        </sc-if>
+        <div style="margin-top:22px;padding-top:18px;border-top:1px solid rgba(245,242,236,.1);font:400 12px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.66);text-wrap:pretty">Si no tienes acceso al correo institucional, pide el restablecimiento en la sala de sistemas con tu documento.</div>
+        <div style="margin-top:18px;text-align:center;font:400 12.5px/1 Archivo,sans-serif"><span onClick="{{ goLogin }}" style="color:#C6FF3D;font-weight:600;cursor:pointer">← Volver a iniciar sesión</span></div>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+<div style="min-height:100vh;background:#141210;background-image:radial-gradient(1100px 520px at 88% -8%,rgba(124,92,255,.20),transparent 60%),radial-gradient(700px 400px at -6% 104%,rgba(198,255,61,.09),transparent 60%)">
+
+  <div style="display:flex;align-items:center;gap:18px;padding:14px 22px;border-bottom:1px solid rgba(245,242,236,.09);position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);background:rgba(20,18,16,.86)">
+    <div style="display:flex;align-items:center;gap:11px;flex:none">
+      <div style="width:34px;height:34px;border-radius:10px;background:#7C5CFF;display:grid;place-items:center;font:800 15px/1 Archivo,sans-serif;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 6px 22px rgba(124,92,255,.45)">W</div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <div style="font:700 14.5px/1.1 Archivo,sans-serif;letter-spacing:-.01em">Aula<span style="color:#7C5CFF">WM</span></div>
+        <div style="font:500 9px/1.1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Wilmer Mosquera</div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;display:flex;justify-content:center">
+      <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:420px;padding:8px 13px;border:1px solid rgba(245,242,236,.11);border-radius:10px;background:rgba(245,242,236,.04)">
+        <span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">⌘K</span>
+        <span style="font:400 12.5px/1 Archivo,sans-serif;color:rgba(245,242,236,.66)">Buscar cursos, labs, simulacros…</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;flex:none">
+      <div style="display:flex;padding:3px;border:1px solid rgba(245,242,236,.11);border-radius:9px;background:rgba(245,242,236,.04)">
+        <div onClick="{{ setAlumno }}" style="{{ tabAlumno }}">Alumno</div>
+        <div onClick="{{ setDocente }}" style="{{ tabDocente }}">Docente</div>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(140deg,#C6FF3D,#7C5CFF);display:grid;place-items:center;font:700 11px/1 'Azeret Mono',monospace;color:#141210">SM</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:stretch;min-height:calc(100vh - 63px)">
+
+    <div class="om-sb" style="flex:none;width:214px;border-right:1px solid rgba(245,242,236,.09);padding:16px 12px 26px;display:flex;flex-direction:column;gap:4px;position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto">
+      <sc-for list="{{ nav }}" as="it" hint-placeholder-count="12">
+        <div onClick="{{ it.go }}" style="{{ it.style }}" style-hover="background:rgba(245,242,236,.07)">
+          <span style="{{ it.bar }}"></span>
+          <span style="font:600 9.5px/1 'Azeret Mono',monospace;opacity:.5;width:16px;flex:none">{{ it.n }}</span>
+          <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.label }}</span>
+        </div>
+      </sc-for>
+      <div style="margin-top:auto;padding:12px;border:1px dashed rgba(198,255,61,.3);border-radius:12px;background:rgba(198,255,61,.05)">
+        <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#C6FF3D;text-transform:uppercase">Periodo 3</div>
+        <div style="margin-top:6px;font:400 11.5px/1.45 Archivo,sans-serif;color:rgba(245,242,236,.6)">Cierre de notas: 28 nov · faltan 3 entregas</div>
+      </div>
+      <div onClick="{{ goLogin }}" style="margin-top:8px;display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;font:600 12px/1.35 Archivo,sans-serif;color:rgba(245,242,236,.66)" style-hover="background:rgba(245,242,236,.07)">
+        <span style="font:600 10px/1 'Azeret Mono',monospace;width:16px;flex:none">↩</span>
+        <span>Cerrar sesión</span>
+      </div>
+    </div>
+
+    <div class="om-sb" style="flex:1;min-width:0;padding:26px 28px 60px">
+
+      <!-- ============ INICIO ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Lunes 7 · Semana 12</div>
+            <h1 style="margin:10px 0 0;font:800 40px/1.02 Archivo,sans-serif;letter-spacing:-.03em;max-width:15ch;text-wrap:pretty">Buenas, Sara.<br><span style="color:rgba(245,242,236,.66)">Vas 2 sesiones adelante.</span></h1>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <div onClick="{{ goIcfes }}" style="padding:13px 18px;border-radius:12px;background:#C6FF3D;color:#141210;font:700 13px/1 Archivo,sans-serif;cursor:pointer;display:flex;align-items:center;gap:9px" style-hover="background:#d6ff6b">Iniciar simulacro ICFES <span style="font:600 11px/1 'Azeret Mono',monospace">→</span></div>
+            <div onClick="{{ goCode }}" style="padding:13px 18px;border-radius:12px;border:1px solid rgba(245,242,236,.16);font:600 13px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">Abrir lab de código</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:26px">
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Racha</div>
+            <div style="margin-top:9px;display:flex;align-items:baseline;gap:6px"><span style="font:800 34px/1 Archivo,sans-serif;letter-spacing:-.03em">14</span><span style="font:500 12px/1 Archivo,sans-serif;color:rgba(245,242,236,.7)">días</span></div>
+            <div style="margin-top:11px;display:flex;gap:3px">
+              <span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:#C6FF3D"></span><span style="flex:1;height:5px;border-radius:3px;background:rgba(245,242,236,.14)"></span>
+            </div>
+          </div>
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Puntos XP</div>
+            <div style="margin-top:9px;font:800 34px/1 Archivo,sans-serif;letter-spacing:-.03em">4.820</div>
+            <div style="margin-top:11px;font:400 11.5px/1.3 Archivo,sans-serif;color:rgba(245,242,236,.7)">Puesto <span style="color:#C6FF3D;font-weight:700">3</span> de 34 en 10°B</div>
+          </div>
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Labs superados</div>
+            <div style="margin-top:9px;display:flex;align-items:baseline;gap:6px"><span style="font:800 34px/1 Archivo,sans-serif;letter-spacing:-.03em">27</span><span style="font:500 12px/1 Archivo,sans-serif;color:rgba(245,242,236,.7)">/ 40</span></div>
+            <div style="margin-top:11px;height:5px;border-radius:3px;background:rgba(245,242,236,.14);overflow:hidden"><div style="width:67%;height:100%;background:#7C5CFF"></div></div>
+          </div>
+          <div style="padding:16px;border-radius:14px;background:linear-gradient(150deg,rgba(124,92,255,.28),rgba(124,92,255,.06));border:1px solid rgba(124,92,255,.4)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.6);text-transform:uppercase">Listo para ICFES</div>
+            <div style="margin-top:9px;display:flex;align-items:baseline;gap:6px"><span style="font:800 34px/1 Archivo,sans-serif;letter-spacing:-.03em">74</span><span style="font:500 12px/1 Archivo,sans-serif;color:rgba(245,242,236,.6)">%</span></div>
+            <div style="margin-top:11px;font:400 11.5px/1.3 Archivo,sans-serif;color:rgba(245,242,236,.62)">Débil en Razonamiento cuantitativo</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px">
+          <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h2 style="margin:0;font:700 17px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Mis cursos</h2>
+              <span style="font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">8 activos</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+              <sc-for list="{{ courses }}" as="c" hint-placeholder-count="5">
+                <div onClick="{{ goCurso }}" style="display:flex;align-items:center;gap:13px;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.07);cursor:pointer" style-hover="border-color:rgba(124,92,255,.55)">
+                  <div style="{{ c.chip }}">{{ c.tag }}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font:600 13px/1.25 Archivo,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.name }}</div>
+                    <div style="margin-top:4px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">{{ c.meta }}</div>
+                  </div>
+                  <div style="flex:none;width:64px">
+                    <div style="height:4px;border-radius:3px;background:rgba(245,242,236,.14);overflow:hidden"><div style="{{ c.fill }}"></div></div>
+                    <div style="margin-top:5px;font:600 9.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7);text-align:right">{{ c.pct }}%</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h2 style="margin:0;font:700 17px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Por entregar</h2>
+              <div style="display:flex;flex-direction:column;gap:2px;margin-top:12px">
+                <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(245,242,236,.07)">
+                  <span style="flex:none;width:44px;font:600 10px/1.5 'Azeret Mono',monospace;color:#FF6B4A">HOY</span>
+                  <div style="flex:1;min-width:0"><div style="font:600 12.5px/1.3 Archivo,sans-serif">Lab 07 — Consultas JOIN en MySQL</div><div style="margin-top:3px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Bases de datos · 20 pts</div></div>
+                </div>
+                <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(245,242,236,.07)">
+                  <span style="flex:none;width:44px;font:600 10px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">MIÉ</span>
+                  <div style="flex:1;min-width:0"><div style="font:600 12.5px/1.3 Archivo,sans-serif">Tablas dinámicas + BUSCARV</div><div style="margin-top:3px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Excel · entrega .xlsx</div></div>
+                </div>
+                <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(245,242,236,.07)">
+                  <span style="flex:none;width:44px;font:600 10px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">VIE</span>
+                  <div style="flex:1;min-width:0"><div style="font:600 12.5px/1.3 Archivo,sans-serif">Componentes y props en React</div><div style="margin-top:3px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Frontend · quiz + lab</div></div>
+                </div>
+                <div style="display:flex;gap:12px;padding:11px 0">
+                  <span style="flex:none;width:44px;font:600 10px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">LUN</span>
+                  <div style="flex:1;min-width:0"><div style="font:600 12.5px/1.3 Archivo,sans-serif">Ensayo: contrato de aprendizaje</div><div style="margin-top:3px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Derecho laboral · Word</div></div>
+                </div>
+              </div>
+            </div>
+            <div onClick="{{ goVideo }}" style="position:relative;overflow:hidden;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09);cursor:pointer" style-hover="border-color:rgba(198,255,61,.5)">
+              <div style="position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(198,255,61,.12))"></div>
+              <div style="position:relative;display:flex;gap:14px;align-items:center">
+                <div style="flex:none;width:78px;height:56px;border-radius:9px;background:rgba(245,242,236,.08);border:1px solid rgba(245,242,236,.12);display:grid;place-items:center;font:600 9px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.62);text-align:center">MINIATURA<br>16:9</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#C6FF3D;text-transform:uppercase">Continuar viendo</div>
+                  <div style="margin-top:7px;font:700 14px/1.25 Archivo,sans-serif">Modelo relacional: claves foráneas</div>
+                  <div style="margin-top:7px;height:3px;border-radius:2px;background:rgba(245,242,236,.16);overflow:hidden"><div style="width:38%;height:100%;background:#C6FF3D"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CURSO ============ -->
+      <sc-if value="{{ isCurso }}">
+      <div>
+        <div style="padding:22px;border-radius:18px;background:linear-gradient(135deg,rgba(124,92,255,.3),rgba(20,18,16,0) 70%),#1C1A17;border:1px solid rgba(245,242,236,.1)">
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between">
+            <div style="min-width:0">
+              <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Media técnica · Auxiliar en Sistemas de Información</div>
+              <h1 style="margin:11px 0 0;font:800 34px/1.05 Archivo,sans-serif;letter-spacing:-.03em;max-width:22ch;text-wrap:pretty">Fullstack en JavaScript</h1>
+              <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:7px">
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(245,242,236,.16);font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.65)">HTML5</span>
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(245,242,236,.16);font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.65)">CSS3</span>
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(245,242,236,.16);font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.65)">JavaScript</span>
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(198,255,61,.4);background:rgba(198,255,61,.1);font:500 11px/1 'Azeret Mono',monospace;color:#C6FF3D">React.js</span>
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(245,242,236,.16);font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.65)">Next.js</span>
+                <span style="padding:5px 10px;border-radius:20px;border:1px solid rgba(245,242,236,.16);font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.65)">Node · Express · Nest</span>
+              </div>
+            </div>
+            <div style="flex:none;display:flex;gap:26px;align-items:flex-end">
+              <div><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.7);text-transform:uppercase">Avance</div><div style="margin-top:7px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em">62<span style="font-size:16px;color:rgba(245,242,236,.7)">%</span></div></div>
+              <div><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.7);text-transform:uppercase">Nota</div><div style="margin-top:7px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em;color:#C6FF3D">4.3</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:16px;align-items:start">
+          <div style="grid-column:span 2;min-width:0;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ modules }}" as="m" hint-placeholder-count="4">
+              <div style="border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09);overflow:hidden">
+                <div onClick="{{ m.go }}" style="display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer" style-hover="background:rgba(245,242,236,.04)">
+                  <span style="font:700 11px/1 'Azeret Mono',monospace;color:#7C5CFF">{{ m.n }}</span>
+                  <span style="flex:1;min-width:0;font:700 14.5px/1.25 Archivo,sans-serif">{{ m.title }}</span>
+                  <span style="font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">{{ m.meta }}</span>
+                  <span style="{{ m.caret }}">▾</span>
+                </div>
+                <sc-if value="{{ m.open }}">
+                  <div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:2px">
+                    <sc-for list="{{ m.items }}" as="i" hint-placeholder-count="3">
+                      <div onClick="{{ i.go }}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(245,242,236,.03);cursor:pointer" style-hover="background:rgba(124,92,255,.14)">
+                        <span style="{{ i.kindStyle }}">{{ i.kind }}</span>
+                        <span style="flex:1;min-width:0;font:500 12.5px/1.3 Archivo,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ i.name }}</span>
+                        <span style="font:500 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">{{ i.dur }}</span>
+                        <span style="{{ i.dot }}"></span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="display:flex;gap:13px;align-items:center">
+                <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(140deg,#7C5CFF,#C6FF3D);display:grid;place-items:center;font:700 13px/1 'Azeret Mono',monospace;color:#141210">WM</div>
+                <div><div style="font:700 13.5px/1.2 Archivo,sans-serif">Wilmer Mosquera</div><div style="margin-top:3px;font:400 10.5px/1.2 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Docente titular · Sistemas</div></div>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:8px">
+                <div style="flex:1;text-align:center;padding:9px;border-radius:9px;border:1px solid rgba(245,242,236,.14);font:600 11.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">Mensaje</div>
+                <div style="flex:1;text-align:center;padding:9px;border-radius:9px;border:1px solid rgba(245,242,236,.14);font:600 11.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">Asesoría</div>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 14px/1.2 Archivo,sans-serif">Material de apoyo</h3>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+                <div style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 6px;border-radius:5px;background:#FF6B4A;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">PDF</span><span style="flex:1;min-width:0;font:500 12px/1.3 Archivo,sans-serif">Guía de hooks — useState y useEffect</span></div>
+                <div style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 6px;border-radius:5px;background:#C6FF3D;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">REPO</span><span style="flex:1;min-width:0;font:500 12px/1.3 Archivo,sans-serif">starter-react-clase08</span></div>
+                <div style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 6px;border-radius:5px;background:#7C5CFF;color:#fff;font:700 8.5px/1 'Azeret Mono',monospace">SLD</span><span style="flex:1;min-width:0;font:500 12px/1.3 Archivo,sans-serif">Ciclo de vida del componente</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ VIDEO ============ -->
+      <sc-if value="{{ isVideo }}">
+      <div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start">
+          <div style="grid-column:span 2;min-width:0">
+            <div style="position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#0E0C0B;border:1px solid rgba(245,242,236,.1);display:grid;place-items:center">
+              <div style="text-align:center">
+                <div style="width:64px;height:64px;margin:0 auto;border-radius:50%;background:#C6FF3D;display:grid;place-items:center;color:#141210;font:400 22px/1 Archivo,sans-serif;cursor:pointer">▶</div>
+                <div style="margin-top:14px;font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:rgba(245,242,236,.62);text-transform:uppercase">Placeholder de video 1920×1080</div>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 18px;background:linear-gradient(transparent,rgba(14,12,11,.92))">
+                <div style="display:flex;gap:3px;align-items:center">
+                  <div style="flex:2;height:5px;border-radius:3px;background:#C6FF3D"></div>
+                  <div style="flex:1;height:5px;border-radius:3px;background:rgba(245,242,236,.22)"></div>
+                  <div style="flex:1.4;height:5px;border-radius:3px;background:rgba(245,242,236,.22)"></div>
+                  <div style="flex:1;height:5px;border-radius:3px;background:rgba(245,242,236,.22)"></div>
+                </div>
+                <div style="margin-top:11px;display:flex;align-items:center;gap:14px;font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.75)">
+                  <span>08:12 / 21:40</span><span style="opacity:.4">·</span><span>1.25×</span><span style="opacity:.4">·</span><span>CC es</span>
+                  <span style="margin-left:auto;padding:5px 10px;border-radius:7px;background:rgba(245,242,236,.12);cursor:pointer">Marcar apunte ⌥N</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between">
+              <div style="min-width:0">
+                <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Bases de datos · Módulo 2 · Clase 04</div>
+                <h1 style="margin:9px 0 0;font:800 27px/1.1 Archivo,sans-serif;letter-spacing:-.025em;max-width:24ch;text-wrap:pretty">Modelo relacional: claves primarias y foráneas</h1>
+              </div>
+              <div style="display:flex;gap:8px;flex:none">
+                <div style="padding:10px 15px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Descargar guía</div>
+                <div onClick="{{ goSql }}" style="padding:10px 15px;border-radius:10px;background:#7C5CFF;color:#fff;font:600 12px/1 Archivo,sans-serif;cursor:pointer">Ir al lab SQL</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="display:flex;gap:20px;border-bottom:1px solid rgba(245,242,236,.09);padding-bottom:11px">
+                <span style="font:700 12.5px/1 Archivo,sans-serif;color:#C6FF3D;border-bottom:2px solid #C6FF3D;padding-bottom:11px;margin-bottom:-12px">Capítulos</span>
+                <span style="font:500 12.5px/1 Archivo,sans-serif;color:rgba(245,242,236,.7)">Transcripción</span>
+                <span style="font:500 12.5px/1 Archivo,sans-serif;color:rgba(245,242,236,.7)">Preguntas</span>
+                <span style="font:500 12.5px/1 Archivo,sans-serif;color:rgba(245,242,236,.7)">Recursos</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1px;margin-top:8px">
+                <div style="display:flex;gap:14px;padding:11px 8px;border-radius:9px;cursor:pointer" style-hover="background:rgba(245,242,236,.05)"><span style="font:600 11px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.66);width:44px;flex:none">00:00</span><span style="font:500 12.5px/1.4 Archivo,sans-serif">¿Por qué normalizar?</span></div>
+                <div style="display:flex;gap:14px;padding:11px 8px;border-radius:9px;background:rgba(198,255,61,.1);cursor:pointer"><span style="font:600 11px/1.4 'Azeret Mono',monospace;color:#C6FF3D;width:44px;flex:none">07:05</span><span style="font:600 12.5px/1.4 Archivo,sans-serif;color:#C6FF3D">Clave foránea en la práctica</span></div>
+                <div style="display:flex;gap:14px;padding:11px 8px;border-radius:9px;cursor:pointer" style-hover="background:rgba(245,242,236,.05)"><span style="font:600 11px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.66);width:44px;flex:none">12:30</span><span style="font:500 12.5px/1.4 Archivo,sans-serif">ON DELETE CASCADE</span></div>
+                <div style="display:flex;gap:14px;padding:11px 8px;border-radius:9px;cursor:pointer" style-hover="background:rgba(245,242,236,.05)"><span style="font:600 11px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.66);width:44px;flex:none">17:48</span><span style="font:500 12.5px/1.4 Archivo,sans-serif">Reto: esquema de matrículas</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Mis apuntes</h3>
+              <span style="font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">{{ noteCount }}</span>
+            </div>
+            <div style="display:flex;gap:8px;padding:11px 13px;border-radius:11px;border:1px solid rgba(124,92,255,.45);background:rgba(124,92,255,.09)">
+              <span style="font:600 10.5px/1.5 'Azeret Mono',monospace;color:#7C5CFF;flex:none">08:12</span>
+              <input value="{{ note }}" onChange="{{ onNote }}" placeholder="Escribe tu apunte…" style="flex:1;min-width:0;background:transparent;border:0;outline:0;color:#F5F2EC;font:400 12.5px/1.4 Archivo,sans-serif">
+            </div>
+            <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+              <div style="padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border-left:2px solid #C6FF3D">
+                <div style="font:600 10px/1 'Azeret Mono',monospace;color:#C6FF3D">{{ n.t }}</div>
+                <div style="margin-top:6px;font:400 12.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.82);text-wrap:pretty">{{ n.text }}</div>
+              </div>
+            </sc-for>
+            <div style="margin-top:4px;padding:13px;border-radius:11px;border:1px dashed rgba(245,242,236,.18)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Resumen automático</div>
+              <div style="margin-top:8px;font:400 12px/1.55 Archivo,sans-serif;color:rgba(245,242,236,.6);text-wrap:pretty">La clase foránea referencia la primaria de otra tabla y garantiza integridad referencial. Se recomienda declararla al crear la tabla.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ ICFES ============ -->
+      <sc-if value="{{ isIcfes }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.1)">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="padding:6px 11px;border-radius:7px;background:#FF6B4A;color:#141210;font:700 10px/1 'Azeret Mono',monospace;letter-spacing:.1em">EN CURSO</div>
+            <div><div style="font:700 14px/1.2 Archivo,sans-serif">Simulacro ICFES · Sesión 1</div><div style="margin-top:3px;font:400 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Lectura crítica + Razonamiento cuantitativo · 50 preguntas</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="text-align:right"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Tiempo restante</div><div style="margin-top:5px;font:700 24px/1 'Azeret Mono',monospace;letter-spacing:-.02em;color:{{ clockColor }}">{{ clock }}</div></div>
+            <div onClick="{{ toggleTrain }}" style="{{ trainBtn }}">Modo entrenamiento</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px;align-items:start">
+          <div style="min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#7C5CFF;text-transform:uppercase">Contexto — texto 3</div>
+            <h3 style="margin:11px 0 0;font:700 16px/1.3 Archivo,sans-serif">El dato como materia prima</h3>
+            <div style="margin-top:12px;font:400 13.5px/1.68 Archivo,sans-serif;color:rgba(245,242,236,.78);text-wrap:pretty">Toda organización que digitaliza sus procesos empieza a producir registros: ventas, matrículas, inventarios. Ese registro por sí solo no informa nada. Solo cuando se ordena en una estructura —una tabla, una relación, un índice— aparece la posibilidad de preguntarle algo y obtener respuesta.<br><br>La diferencia entre archivo y base de datos no es el tamaño, sino la capacidad de consultar sin abrir. Quien domina esa distinción deja de ser usuario y empieza a ser administrador de su propia información.</div>
+            <div style="margin-top:16px;display:flex;gap:8px;font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)"><span style="padding:5px 9px;border-radius:6px;background:rgba(245,242,236,.06)">A+ Tamaño</span><span style="padding:5px 9px;border-radius:6px;background:rgba(245,242,236,.06)">Resaltar</span><span style="padding:5px 9px;border-radius:6px;background:rgba(245,242,236,.06)">Leer en voz alta</span></div>
+          </div>
+
+          <div style="min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <div style="font:700 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">PREGUNTA {{ qNum }} / 50</div>
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.12em;color:#C6FF3D;text-transform:uppercase">{{ qComp }}</div>
+            </div>
+            <h2 style="margin:14px 0 0;font:700 18px/1.4 Archivo,sans-serif;letter-spacing:-.01em;text-wrap:pretty">{{ qStem }}</h2>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:18px">
+              <sc-for list="{{ qOptions }}" as="o" hint-placeholder-count="4">
+                <div onClick="{{ o.go }}" style="{{ o.style }}" style-hover="border-color:rgba(124,92,255,.6)">
+                  <span style="{{ o.key }}">{{ o.k }}</span>
+                  <span style="flex:1;min-width:0;font:500 13.5px/1.5 Archivo,sans-serif;text-wrap:pretty">{{ o.text }}</span>
+                  <span style="font:700 12px/1.5 'Azeret Mono',monospace;flex:none">{{ o.mark }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ showFeedback }}">
+              <div style="margin-top:16px;padding:14px;border-radius:12px;background:rgba(198,255,61,.09);border:1px solid rgba(198,255,61,.35)">
+                <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#C6FF3D;text-transform:uppercase">Retroalimentación</div>
+                <div style="margin-top:8px;font:400 13px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.85);text-wrap:pretty">{{ feedback }}</div>
+              </div>
+            </sc-if>
+            <div style="margin-top:18px;display:flex;gap:9px;justify-content:space-between">
+              <div onClick="{{ prevQ }}" style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">← Anterior</div>
+              <div style="display:flex;gap:9px">
+                <div style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#FF6B4A">Marcar</div>
+                <div onClick="{{ nextQ }}" style="padding:11px 20px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Siguiente →</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 14px/1.2 Archivo,sans-serif">Cuadernillo</h3>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:5px;margin-top:13px">
+                <sc-for list="{{ grid }}" as="g" hint-placeholder-count="50">
+                  <div onClick="{{ g.go }}" style="{{ g.style }}">{{ g.n }}</div>
+                </sc-for>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px;font:500 10.5px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:#7C5CFF"></span>Actual</div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:rgba(198,255,61,.65)"></span>Respondida</div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:rgba(245,242,236,.12)"></span>Sin responder</div>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 14px/1.2 Archivo,sans-serif">Ritmo</h3>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:11px">
+                <div><div style="display:flex;justify-content:space-between;font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.55)"><span>Promedio</span><span>1:04 / preg.</span></div><div style="margin-top:6px;height:4px;border-radius:3px;background:rgba(245,242,236,.14);overflow:hidden"><div style="width:52%;height:100%;background:#C6FF3D"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font:500 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.55)"><span>Ideal</span><span>1:20 / preg.</span></div><div style="margin-top:6px;height:4px;border-radius:3px;background:rgba(245,242,236,.14);overflow:hidden"><div style="width:66%;height:100%;background:#7C5CFF"></div></div></div>
+              </div>
+              <div onClick="{{ goResults }}" style="margin-top:16px;text-align:center;padding:11px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Finalizar y ver reporte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ RESULTADOS ============ -->
+      <sc-if value="{{ isResults }}">
+      <div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:stretch">
+          <div style="padding:24px;border-radius:18px;background:linear-gradient(150deg,rgba(198,255,61,.2),rgba(28,26,23,1) 65%);border:1px solid rgba(198,255,61,.32)">
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Puntaje global</div>
+            <div style="margin-top:12px;display:flex;align-items:flex-end;gap:9px"><span style="font:900 76px/.85 Archivo,sans-serif;letter-spacing:-.05em">318</span><span style="font:500 14px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7);padding-bottom:8px">/ 500</span></div>
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+              <span style="padding:6px 11px;border-radius:20px;background:rgba(20,18,16,.5);border:1px solid rgba(245,242,236,.14);font:600 11px/1 'Azeret Mono',monospace">+24 vs. simulacro 3</span>
+              <span style="padding:6px 11px;border-radius:20px;background:rgba(20,18,16,.5);border:1px solid rgba(245,242,236,.14);font:600 11px/1 'Azeret Mono',monospace">Percentil 71</span>
+            </div>
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(245,242,236,.13);font:400 12.5px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.68);text-wrap:pretty">Sesión del 6 sep · 50 preguntas · 47 respondidas · 1h 42m</div>
+          </div>
+          <div style="grid-column:span 2;min-width:0;padding:22px;border-radius:18px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h2 style="margin:0;font:700 18px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Desempeño por competencia</h2>
+            <div style="display:flex;flex-direction:column;gap:15px;margin-top:18px">
+              <sc-for list="{{ comps }}" as="c" hint-placeholder-count="5">
+                <div>
+                  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                    <span style="font:600 13px/1.3 Archivo,sans-serif">{{ c.name }}</span>
+                    <span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">{{ c.label }}</span>
+                  </div>
+                  <div style="margin-top:7px;position:relative;height:9px;border-radius:5px;background:rgba(245,242,236,.1);overflow:hidden">
+                    <div style="{{ c.fill }}"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:6px">
+              <div style="flex:1;padding:10px;border-radius:9px;text-align:center;background:rgba(245,242,236,.05);font:600 10.5px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Nivel 1</div>
+              <div style="flex:1;padding:10px;border-radius:9px;text-align:center;background:rgba(245,242,236,.05);font:600 10.5px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Nivel 2</div>
+              <div style="flex:1;padding:10px;border-radius:9px;text-align:center;background:#7C5CFF;color:#fff;font:700 10.5px/1.3 'Azeret Mono',monospace">Nivel 3 · tu nivel</div>
+              <div style="flex:1;padding:10px;border-radius:9px;text-align:center;background:rgba(245,242,236,.05);font:600 10.5px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Nivel 4</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px">
+          <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Qué repasar primero</h3>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+              <div onClick="{{ goVideo }}" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:11px;background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.35);cursor:pointer"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#7C5CFF;color:#fff;font:700 8.5px/1 'Azeret Mono',monospace">VIDEO</span><span style="flex:1;min-width:0;font:500 12.5px/1.35 Archivo,sans-serif">Proporcionalidad y porcentajes · 14 min</span></div>
+              <div onClick="{{ goIcfes }}" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#C6FF3D;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">DRILL</span><span style="flex:1;min-width:0;font:500 12.5px/1.35 Archivo,sans-serif">12 preguntas de interpretación de tablas</span></div>
+              <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#FF6B4A;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">PDF</span><span style="flex:1;min-width:0;font:500 12.5px/1.35 Archivo,sans-serif">Banco de inferencias — lectura crítica</span></div>
+            </div>
+          </div>
+          <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Frente al grupo 10°B</h3>
+            <div style="margin-top:18px;display:flex;align-items:flex-end;gap:5px;height:104px">
+              <sc-for list="{{ bars }}" as="b" hint-placeholder-count="12">
+                <div style="{{ b.style }}"></div>
+              </sc-for>
+            </div>
+            <div style="margin-top:11px;display:flex;justify-content:space-between;font:500 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)"><span>0</span><span style="color:#C6FF3D">tú: 318</span><span>500</span></div>
+            <div style="margin-top:14px;font:400 12px/1.55 Archivo,sans-serif;color:rgba(245,242,236,.6);text-wrap:pretty">Estás por encima de la media del grupo (291) y a 42 puntos del mejor resultado.</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ LAB CÓDIGO ============ -->
+      <sc-if value="{{ isCode }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Fundamentos de programación · Lab 12</div>
+            <h1 style="margin:9px 0 0;font:800 27px/1.1 Archivo,sans-serif;letter-spacing:-.025em">Renderizar una lista con <span style="font-family:'Azeret Mono',monospace;font-size:23px;color:#C6FF3D">.map()</span></h1>
+          </div>
+          <div style="display:flex;gap:9px">
+            <div onClick="{{ runCode }}" style="padding:11px 19px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer;display:flex;gap:8px;align-items:center">▶ Ejecutar pruebas</div>
+            <div style="padding:11px 19px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#7C5CFF">Entregar</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:start">
+          <div style="min-width:0;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Enunciado</div>
+            <div style="margin-top:11px;font:400 13px/1.65 Archivo,sans-serif;color:rgba(245,242,236,.8);text-wrap:pretty">Crea el componente <span style="font-family:'Azeret Mono',monospace;font-size:12px;color:#C6FF3D">ListaEstudiantes</span> que reciba un arreglo por props y devuelva un <span style="font-family:'Azeret Mono',monospace;font-size:12px;color:#C6FF3D">&lt;ul&gt;</span> con un ítem por estudiante. Cada ítem debe llevar una <em>key</em> estable.</div>
+            <div style="margin-top:16px;font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Archivos</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:2px;font:500 11.5px/1 'Azeret Mono',monospace">
+              <div style="padding:8px 10px;border-radius:7px;color:rgba(245,242,236,.7)">src/</div>
+              <div style="padding:8px 10px 8px 22px;border-radius:7px;background:rgba(124,92,255,.16);color:#F5F2EC;border-left:2px solid #7C5CFF">ListaEstudiantes.jsx</div>
+              <div style="padding:8px 10px 8px 22px;border-radius:7px;color:rgba(245,242,236,.7)">App.jsx</div>
+              <div style="padding:8px 10px 8px 22px;border-radius:7px;color:rgba(245,242,236,.7)">lista.test.js</div>
+            </div>
+            <div style="margin-top:18px;padding:13px;border-radius:11px;border:1px dashed rgba(245,242,236,.18)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#C6FF3D;text-transform:uppercase">Pista 1 de 3</div>
+              <div style="margin-top:7px;font:400 12px/1.55 Archivo,sans-serif;color:rgba(245,242,236,.6)">El callback de <span style="font-family:'Azeret Mono',monospace">.map()</span> recibe el elemento y su índice.</div>
+            </div>
+          </div>
+
+          <div style="grid-column:span 2;min-width:0;border-radius:16px;background:#0E0C0B;border:1px solid rgba(245,242,236,.1);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:0;border-bottom:1px solid rgba(245,242,236,.09);background:#151312">
+              <div style="padding:12px 16px;font:600 11.5px/1 'Azeret Mono',monospace;color:#F5F2EC;border-bottom:2px solid #C6FF3D">ListaEstudiantes.jsx</div>
+              <div style="padding:12px 16px;font:500 11.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">App.jsx</div>
+              <div style="margin-left:auto;padding:0 16px;font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">JSX · UTF-8 · Ln 9</div>
+            </div>
+            <div class="om-sb" style="padding:16px 0;font:400 13px/1.85 'Azeret Mono',monospace;overflow-x:auto">
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">1</span><span><span style="color:#7C5CFF">export default function</span> <span style="color:#C6FF3D">ListaEstudiantes</span>({ estudiantes }) {</span></div>
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">2</span><span>  <span style="color:#7C5CFF">return</span> (</span></div>
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">3</span><span>    &lt;<span style="color:#FF9E6B">ul</span> <span style="color:#C6FF3D">className</span>=<span style="color:#8AE9C1">"lista"</span>&gt;</span></div>
+              <div style="display:flex;background:rgba(124,92,255,.12)"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:#7C5CFF">4</span><span>      {estudiantes.<span style="color:#C6FF3D">map</span>((e) =&gt; (</span></div>
+              <div style="display:flex;background:rgba(124,92,255,.12)"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:#7C5CFF">5</span><span>        &lt;<span style="color:#FF9E6B">li</span> <span style="color:#C6FF3D">key</span>={e.id}&gt;{e.nombre}&lt;/<span style="color:#FF9E6B">li</span>&gt;</span></div>
+              <div style="display:flex;background:rgba(124,92,255,.12)"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:#7C5CFF">6</span><span>      ))}<span style="display:inline-block;width:8px;height:15px;background:#C6FF3D;vertical-align:-2px;animation:blink 1.1s step-end infinite"></span></span></div>
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">7</span><span>    &lt;/<span style="color:#FF9E6B">ul</span>&gt;</span></div>
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">8</span><span>  );</span></div>
+              <div style="display:flex"><span style="flex:none;width:46px;text-align:right;padding-right:14px;color:rgba(245,242,236,.5)">9</span><span>}</span></div>
+            </div>
+            <div style="border-top:1px solid rgba(245,242,236,.09);background:#151312">
+              <div style="display:flex;gap:18px;padding:11px 16px;font:600 11px/1 'Azeret Mono',monospace">
+                <span style="color:#C6FF3D">CONSOLA</span><span style="color:rgba(245,242,236,.62)">PRUEBAS</span><span style="color:rgba(245,242,236,.62)">PREVIEW</span>
+              </div>
+              <div style="padding:0 16px 16px;font:400 12px/1.85 'Azeret Mono',monospace">{{ codeOut }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ LAB EXCEL ============ -->
+      <sc-if value="{{ isExcel }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Excel · Laboratorio 05 · simulación en el LMS</div>
+            <h1 style="margin:9px 0 0;font:800 27px/1.1 Archivo,sans-serif;letter-spacing:-.025em">BUSCARV y tabla dinámica de ventas</h1>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center">
+            <div style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Paso 3 de 6</div>
+            <div onClick="{{ checkExcel }}" style="padding:11px 19px;border-radius:10px;background:#7C5CFF;color:#fff;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Verificar paso</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start">
+          <div style="grid-column:span 2;min-width:0;border-radius:16px;overflow:hidden;background:#F7F5F1;border:1px solid rgba(245,242,236,.14)">
+            <div style="background:#1D6F42;padding:9px 14px;display:flex;align-items:center;gap:16px">
+              <span style="font:700 12px/1 Archivo,sans-serif;color:#fff">Ventas_2026.xlsx</span>
+              <div style="display:flex;gap:14px;font:500 11px/1 Archivo,sans-serif;color:rgba(255,255,255,.8)"><span>Inicio</span><span>Insertar</span><span style="color:#fff;font-weight:700;border-bottom:2px solid #C6FF3D;padding-bottom:3px">Fórmulas</span><span>Datos</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#EDEAE4;border-bottom:1px solid #D6D2C9">
+              <span style="font:600 11px/1 'Azeret Mono',monospace;color:#5A564E;padding:4px 9px;background:#fff;border:1px solid #D6D2C9;border-radius:4px">D2</span>
+              <span style="color:#6E6960;font:400 12px/1 'Azeret Mono',monospace">fx</span>
+              <span style="flex:1;min-width:0;font:400 12.5px/1 'Azeret Mono',monospace;color:#1B1A17;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">=BUSCARV(A2;Productos!$A$2:$C$40;3;FALSO)</span>
+            </div>
+            <div style="overflow-x:auto">
+              <table style="border-collapse:collapse;width:100%;min-width:520px;font:400 12.5px/1 'Azeret Mono',monospace;color:#1B1A17">
+                <tr style="background:#EDEAE4">
+                  <th style="width:34px;border:1px solid #D6D2C9;padding:6px;font-weight:600;color:#6E6960"></th>
+                  <th style="border:1px solid #D6D2C9;padding:6px 9px;font-weight:600;color:#5A564E;text-align:left">A</th>
+                  <th style="border:1px solid #D6D2C9;padding:6px 9px;font-weight:600;color:#5A564E;text-align:left">B</th>
+                  <th style="border:1px solid #D6D2C9;padding:6px 9px;font-weight:600;color:#5A564E;text-align:left">C</th>
+                  <th style="border:1px solid #1D6F42;padding:6px 9px;font-weight:700;background:#CFE8D8;color:#12472A;text-align:left">D</th>
+                  <th style="border:1px solid #D6D2C9;padding:6px 9px;font-weight:600;color:#5A564E;text-align:left">E</th>
+                </tr>
+                <sc-for list="{{ sheet }}" as="r" hint-placeholder-count="8">
+                  <tr>
+                    <td style="border:1px solid #D6D2C9;padding:6px;text-align:center;background:#EDEAE4;color:#6E6960;font-weight:600">{{ r.n }}</td>
+                    <td style="border:1px solid #D6D2C9;padding:6px 9px">{{ r.a }}</td>
+                    <td style="border:1px solid #D6D2C9;padding:6px 9px">{{ r.b }}</td>
+                    <td style="border:1px solid #D6D2C9;padding:6px 9px;text-align:right">{{ r.c }}</td>
+                    <td style="{{ r.dStyle }}">{{ r.d }}</td>
+                    <td style="border:1px solid #D6D2C9;padding:6px 9px;text-align:right;color:#6E6960">{{ r.e }}</td>
+                  </tr>
+                </sc-for>
+              </table>
+            </div>
+            <div style="display:flex;gap:0;background:#EDEAE4;border-top:1px solid #D6D2C9">
+              <div style="padding:8px 15px;font:600 11px/1 Archivo,sans-serif;color:#12472A;background:#F7F5F1;border-right:1px solid #D6D2C9">Ventas</div>
+              <div style="padding:8px 15px;font:500 11px/1 Archivo,sans-serif;color:#6E6960;border-right:1px solid #D6D2C9">Productos</div>
+              <div style="padding:8px 15px;font:500 11px/1 Archivo,sans-serif;color:#6E6960">Dinámica</div>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Guía paso a paso</h3>
+              <div style="display:flex;flex-direction:column;gap:3px;margin-top:13px">
+                <sc-for list="{{ steps }}" as="s" hint-placeholder-count="6">
+                  <div style="{{ s.row }}">
+                    <span style="{{ s.badge }}">{{ s.mark }}</span>
+                    <span style="{{ s.text }}">{{ s.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Verificación</div>
+              <div style="margin-top:12px;font:400 12.5px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.7);text-wrap:pretty">{{ excelMsg }}</div>
+              <div style="margin-top:14px;padding:14px;border-radius:11px;border:1px dashed rgba(198,255,61,.32);background:rgba(198,255,61,.05);text-align:center">
+                <div style="font:600 12px/1 Archivo,sans-serif;color:#C6FF3D">Subir tu .xlsx terminado</div>
+                <div style="margin-top:6px;font:400 10.5px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Arrastra el archivo o haz clic · máx 10 MB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ LAB WORD / POWERPOINT ============ -->
+      <sc-if value="{{ isOffice }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Ofimática · reto con entrega de archivo</div>
+            <h1 style="margin:9px 0 0;font:800 27px/1.1 Archivo,sans-serif;letter-spacing:-.025em">Informe en Word + sustentación en PowerPoint</h1>
+          </div>
+          <div style="display:flex;padding:3px;border:1px solid rgba(245,242,236,.13);border-radius:10px;background:rgba(245,242,236,.04)">
+            <div onClick="{{ setWord }}" style="{{ tabWord }}">Word</div>
+            <div onClick="{{ setPpt }}" style="{{ tabPpt }}">PowerPoint</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start">
+          <div style="grid-column:span 2;min-width:0">
+            <sc-if value="{{ isWord }}">
+              <div style="border-radius:16px;overflow:hidden;background:#F7F5F1;border:1px solid rgba(245,242,236,.14)">
+                <div style="background:#2B579A;padding:9px 14px;display:flex;gap:16px;align-items:center">
+                  <span style="font:700 12px/1 Archivo,sans-serif;color:#fff">Informe_DerechoLaboral.docx</span>
+                  <div style="display:flex;gap:14px;font:500 11px/1 Archivo,sans-serif;color:rgba(255,255,255,.8)"><span style="color:#fff;font-weight:700;border-bottom:2px solid #C6FF3D;padding-bottom:3px">Inicio</span><span>Referencias</span><span>Revisar</span></div>
+                </div>
+                <div style="padding:34px 44px 40px;background:#fff;color:#1B1A17">
+                  <div style="font:400 10px/1 'Azeret Mono',monospace;color:#6E6960;letter-spacing:.1em">TÍTULO 1 · CAMBRIA 16 PT</div>
+                  <h2 style="margin:10px 0 0;font:700 22px/1.3 Georgia,serif">Contrato de aprendizaje: alcance y límites</h2>
+                  <div style="margin-top:14px;font:400 13.5px/1.85 Georgia,serif;color:#3A3630;max-width:62ch;text-wrap:pretty">El contrato de aprendizaje es una forma especial dentro del derecho laboral colombiano. No genera salario en sentido estricto, sino apoyo de sostenimiento, y su duración no puede exceder dos años. <span style="background:#FFF3B0;border-bottom:2px solid #E8C200">La empresa está obligada a garantizar la formación teórica y práctica del aprendiz.</span></div>
+                  <div style="margin-top:14px;font:400 13.5px/1.85 Georgia,serif;color:#3A3630;max-width:62ch;text-wrap:pretty">Para el análisis se revisaron tres casos de la media técnica, con énfasis en la etapa productiva y en las obligaciones del patrocinador.</div>
+                  <div style="margin-top:22px;padding:12px 14px;border-left:3px solid #2B579A;background:#F1F4FA;font:400 12px/1.6 Georgia,serif;color:#2B579A;max-width:52ch">Comentario · Prof. Mosquera: cita la norma con el formato APA que vimos en clase.</div>
+                </div>
+                <div style="padding:9px 14px;background:#EDEAE4;font:500 10.5px/1 'Azeret Mono',monospace;color:#6E6960;display:flex;gap:16px"><span>Página 2 de 5</span><span>1.284 palabras</span><span>Español (Colombia)</span></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isPpt }}">
+              <div style="border-radius:16px;overflow:hidden;background:#F7F5F1;border:1px solid rgba(245,242,236,.14)">
+                <div style="background:#B7472A;padding:9px 14px;display:flex;gap:16px;align-items:center">
+                  <span style="font:700 12px/1 Archivo,sans-serif;color:#fff">Sustentacion.pptx</span>
+                  <div style="display:flex;gap:14px;font:500 11px/1 Archivo,sans-serif;color:rgba(255,255,255,.8)"><span style="color:#fff;font-weight:700;border-bottom:2px solid #C6FF3D;padding-bottom:3px">Diseño</span><span>Transiciones</span><span>Presentar</span></div>
+                </div>
+                <div style="display:flex;gap:0;background:#fff">
+                  <div style="flex:none;width:112px;padding:12px 10px;background:#EDEAE4;display:flex;flex-direction:column;gap:9px">
+                    <div style="aspect-ratio:16/9;border-radius:4px;background:#2B2724;border:2px solid #B7472A;display:grid;place-items:center;font:700 9px/1 'Azeret Mono',monospace;color:#F7F5F1">1</div>
+                    <div style="aspect-ratio:16/9;border-radius:4px;background:#fff;border:1px solid #D6D2C9;display:grid;place-items:center;font:600 9px/1 'Azeret Mono',monospace;color:#6E6960">2</div>
+                    <div style="aspect-ratio:16/9;border-radius:4px;background:#fff;border:1px solid #D6D2C9;display:grid;place-items:center;font:600 9px/1 'Azeret Mono',monospace;color:#6E6960">3</div>
+                    <div style="aspect-ratio:16/9;border-radius:4px;background:#fff;border:1px dashed #C0BBB1;display:grid;place-items:center;font:600 15px/1 Archivo,sans-serif;color:#C0BBB1">+</div>
+                  </div>
+                  <div style="flex:1;min-width:0;padding:22px;background:#DEDAD3;display:grid;place-items:center">
+                    <div style="width:100%;aspect-ratio:16/9;background:#2B2724;border-radius:6px;padding:34px 38px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:0 10px 30px rgba(0,0,0,.25)">
+                      <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.18em;color:#C6FF3D;text-transform:uppercase">Media técnica · 2026</div>
+                      <div style="margin-top:12px;font:800 clamp(20px,3.4vw,38px)/1.05 Archivo,sans-serif;color:#F7F5F1;letter-spacing:-.03em">El aprendiz también<br>es trabajador</div>
+                      <div style="margin-top:14px;height:3px;width:64px;background:#B7472A"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="padding:9px 14px;background:#EDEAE4;font:500 10.5px/1 'Azeret Mono',monospace;color:#6E6960;display:flex;gap:16px"><span>Diapositiva 1 de 3</span><span>Notas del orador</span></div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Rúbrica</h3>
+              <div style="display:flex;flex-direction:column;gap:11px;margin-top:14px">
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12.5px/1.35 Archivo,sans-serif">Estilos y títulos jerárquicos</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:#C6FF3D;flex:none">20 pts</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12.5px/1.35 Archivo,sans-serif">Tabla de contenido automática</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:#C6FF3D;flex:none">15 pts</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12.5px/1.35 Archivo,sans-serif">Citación APA</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:#C6FF3D;flex:none">25 pts</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px"><span style="font:500 12.5px/1.35 Archivo,sans-serif">Coherencia de la sustentación</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:#C6FF3D;flex:none">40 pts</span></div>
+              </div>
+            </div>
+            <div style="padding:20px;border-radius:16px;border:1px dashed rgba(124,92,255,.45);background:rgba(124,92,255,.08);text-align:center">
+              <div style="font:700 13px/1.3 Archivo,sans-serif">Arrastra .docx y .pptx</div>
+              <div style="margin-top:7px;font:400 11px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Revisión automática de estilos<br>+ revisión del docente</div>
+              <div style="margin-top:14px;padding:10px 16px;border-radius:9px;background:#7C5CFF;color:#fff;font:700 12px/1 Archivo,sans-serif;cursor:pointer;display:inline-block">Seleccionar archivos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ LAB SQL ============ -->
+      <sc-if value="{{ isSql }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Bases de datos · MySQL / Postgres / Supabase</div>
+            <h1 style="margin:9px 0 0;font:800 27px/1.1 Archivo,sans-serif;letter-spacing:-.025em">Lab 07 — Consultas con JOIN</h1>
+          </div>
+          <div onClick="{{ runSql }}" style="padding:11px 19px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">▶ Ejecutar consulta</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start">
+          <div style="min-width:0;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Esquema · colegio_db</div>
+            <div style="margin-top:13px;display:flex;flex-direction:column;gap:10px">
+              <div style="padding:12px;border-radius:11px;background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.32)">
+                <div style="font:700 12px/1 'Azeret Mono',monospace;color:#7C5CFF">estudiantes</div>
+                <div style="margin-top:8px;font:400 11px/1.75 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">id <span style="color:#C6FF3D">PK</span><br>nombre<br>grado_id <span style="color:#FF9E6B">FK</span></div>
+              </div>
+              <div style="padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.09)">
+                <div style="font:700 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8)">grados</div>
+                <div style="margin-top:8px;font:400 11px/1.75 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">id <span style="color:#C6FF3D">PK</span><br>nombre<br>jornada</div>
+              </div>
+              <div style="padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.09)">
+                <div style="font:700 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8)">notas</div>
+                <div style="margin-top:8px;font:400 11px/1.75 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">id <span style="color:#C6FF3D">PK</span><br>estudiante_id <span style="color:#FF9E6B">FK</span><br>materia<br>valor</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="grid-column:span 2;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="border-radius:16px;overflow:hidden;background:#0E0C0B;border:1px solid rgba(245,242,236,.1)">
+              <div style="display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:1px solid rgba(245,242,236,.09);background:#151312">
+                <span style="font:600 11.5px/1 'Azeret Mono',monospace;color:#F5F2EC">consulta.sql</span>
+                <span style="font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">MySQL 8 · colegio_db</span>
+                <span style="margin-left:auto;font:500 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D">● conectado</span>
+              </div>
+              <div style="padding:16px;font:400 13px/1.9 'Azeret Mono',monospace">
+                <div><span style="color:#7C5CFF">SELECT</span> e.nombre, g.nombre <span style="color:#7C5CFF">AS</span> grado, <span style="color:#C6FF3D">AVG</span>(n.valor) <span style="color:#7C5CFF">AS</span> promedio</div>
+                <div><span style="color:#7C5CFF">FROM</span> estudiantes e</div>
+                <div><span style="color:#7C5CFF">INNER JOIN</span> grados g <span style="color:#7C5CFF">ON</span> g.id = e.grado_id</div>
+                <div><span style="color:#7C5CFF">LEFT JOIN</span> notas n <span style="color:#7C5CFF">ON</span> n.estudiante_id = e.id</div>
+                <div><span style="color:#7C5CFF">GROUP BY</span> e.id <span style="color:#7C5CFF">HAVING</span> promedio &gt;= <span style="color:#8AE9C1">3.5</span></div>
+                <div><span style="color:#7C5CFF">ORDER BY</span> promedio <span style="color:#7C5CFF">DESC</span>;<span style="display:inline-block;width:8px;height:15px;background:#C6FF3D;vertical-align:-2px;animation:blink 1.1s step-end infinite"></span></div>
+              </div>
+            </div>
+            <div style="border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09);overflow:hidden">
+              <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid rgba(245,242,236,.09)">
+                <span style="font:700 11px/1 'Azeret Mono',monospace;color:#C6FF3D">RESULTADO</span>
+                <span style="font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">{{ sqlMeta }}</span>
+              </div>
+              <div style="overflow-x:auto">
+                <table style="border-collapse:collapse;width:100%;min-width:420px;font:400 12px/1 'Azeret Mono',monospace">
+                  <tr style="background:rgba(245,242,236,.05)">
+                    <th style="padding:10px 14px;text-align:left;font-weight:700;color:rgba(245,242,236,.55);border-bottom:1px solid rgba(245,242,236,.09)">nombre</th>
+                    <th style="padding:10px 14px;text-align:left;font-weight:700;color:rgba(245,242,236,.55);border-bottom:1px solid rgba(245,242,236,.09)">grado</th>
+                    <th style="padding:10px 14px;text-align:right;font-weight:700;color:rgba(245,242,236,.55);border-bottom:1px solid rgba(245,242,236,.09)">promedio</th>
+                  </tr>
+                  <sc-for list="{{ sqlRows }}" as="r" hint-placeholder-count="5">
+                    <tr>
+                      <td style="padding:10px 14px;border-bottom:1px solid rgba(245,242,236,.06)">{{ r.nombre }}</td>
+                      <td style="padding:10px 14px;border-bottom:1px solid rgba(245,242,236,.06);color:rgba(245,242,236,.6)">{{ r.grado }}</td>
+                      <td style="padding:10px 14px;border-bottom:1px solid rgba(245,242,236,.06);text-align:right;color:#C6FF3D;font-weight:700">{{ r.prom }}</td>
+                    </tr>
+                  </sc-for>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ PANEL DOCENTE ============ -->
+      <sc-if value="{{ isTeacher }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Panel del docente · Wilmer Mosquera</div>
+            <h1 style="margin:10px 0 0;font:800 34px/1.05 Archivo,sans-serif;letter-spacing:-.03em">10°B · Tecnología e Informática</h1>
+          </div>
+          <div style="display:flex;gap:9px">
+            <div style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Exportar notas</div>
+            <div style="padding:11px 17px;border-radius:10px;background:#7C5CFF;color:#fff;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Crear simulacro</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:24px">
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Estudiantes</div><div style="margin-top:9px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em">34</div></div>
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Entregas hoy</div><div style="margin-top:9px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em">21<span style="font-size:15px;color:rgba(245,242,236,.7)">/34</span></div></div>
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Promedio ICFES</div><div style="margin-top:9px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em;color:#C6FF3D">291</div></div>
+          <div style="padding:16px;border-radius:14px;background:rgba(255,107,74,.12);border:1px solid rgba(255,107,74,.4)"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:#FF6B4A;text-transform:uppercase">En riesgo</div><div style="margin-top:9px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em;color:#FF6B4A">5</div></div>
+          <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)"><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Por calificar</div><div style="margin-top:9px;font:800 30px/1 Archivo,sans-serif;letter-spacing:-.03em">48</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px;align-items:start">
+          <div style="grid-column:span 2;min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h2 style="margin:0;font:700 17px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Avance por estudiante</h2>
+              <span style="font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">HTML · CSS · JS · React · SQL · Excel</span>
+            </div>
+            <div style="margin-top:16px;overflow-x:auto">
+              <table style="border-collapse:collapse;width:100%;min-width:440px">
+                <sc-for list="{{ roster }}" as="r" hint-placeholder-count="7">
+                  <tr>
+                    <td style="padding:9px 12px 9px 0;font:500 12.5px/1.3 Archivo,sans-serif;white-space:nowrap">{{ r.name }}</td>
+                    <td style="padding:9px 0"><div style="display:flex;gap:4px">
+                      <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+                        <span style="{{ c.style }}"></span>
+                      </sc-for>
+                    </div></td>
+                    <td style="padding:9px 0 9px 14px;font:700 11.5px/1 'Azeret Mono',monospace;text-align:right;color:{{ r.color }};white-space:nowrap">{{ r.avg }}</td>
+                  </tr>
+                </sc-for>
+              </table>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:12px;font:500 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66);flex-wrap:wrap">
+              <span style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:#C6FF3D"></span>Dominado</span>
+              <span style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:#7C5CFF"></span>En progreso</span>
+              <span style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:rgba(255,107,74,.7)"></span>Requiere apoyo</span>
+              <span style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:rgba(245,242,236,.12)"></span>Sin iniciar</span>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+            <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Alertas</h3>
+              <div style="display:flex;flex-direction:column;gap:9px;margin-top:13px">
+                <div style="padding:12px;border-radius:11px;background:rgba(255,107,74,.1);border-left:2px solid #FF6B4A"><div style="font:600 12.5px/1.35 Archivo,sans-serif">Juan D. Cuesta</div><div style="margin-top:4px;font:400 11px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">3 labs sin entregar · sin ingresar 9 días</div></div>
+                <div style="padding:12px;border-radius:11px;background:rgba(255,107,74,.1);border-left:2px solid #FF6B4A"><div style="font:600 12.5px/1.35 Archivo,sans-serif">Grupo completo</div><div style="margin-top:4px;font:400 11px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">62% falló la pregunta de JOIN externo</div></div>
+                <div style="padding:12px;border-radius:11px;background:rgba(198,255,61,.09);border-left:2px solid #C6FF3D"><div style="font:600 12.5px/1.35 Archivo,sans-serif">Sara Mena</div><div style="margin-top:4px;font:400 11px/1.5 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">Lista para reto avanzado de Next.js</div></div>
+              </div>
+            </div>
+            <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Banco de preguntas</h3>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;font:500 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6)"><span>Lectura crítica</span><span style="color:#F5F2EC">184</span></div>
+                <div style="display:flex;justify-content:space-between;font:500 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6)"><span>Razonam. cuantitativo</span><span style="color:#F5F2EC">142</span></div>
+                <div style="display:flex;justify-content:space-between;font:500 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6)"><span>Tecnología</span><span style="color:#F5F2EC">96</span></div>
+                <div style="display:flex;justify-content:space-between;font:500 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6)"><span>Emprendimiento</span><span style="color:#F5F2EC">58</span></div>
+              </div>
+              <div style="margin-top:16px;text-align:center;padding:11px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Añadir pregunta</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ BIBLIOTECA ============ -->
+      <sc-if value="{{ isLib }}">
+      <div>
+        <h1 style="margin:0;font:800 34px/1.05 Archivo,sans-serif;letter-spacing:-.03em">Material de apoyo</h1>
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:7px">
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="8">
+            <div onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px;margin-top:20px">
+          <sc-for list="{{ resources }}" as="r" hint-placeholder-count="9">
+            <div style="padding:16px;border-radius:14px;background:#1C1A17;border:1px solid rgba(245,242,236,.09);cursor:pointer;display:flex;flex-direction:column;gap:12px;min-height:170px" style-hover="border-color:rgba(124,92,255,.55)">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="{{ r.badge }}">{{ r.kind }}</span>
+                <span style="font:500 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">{{ r.size }}</span>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font:700 14px/1.3 Archivo,sans-serif;text-wrap:pretty">{{ r.title }}</div>
+                <div style="margin-top:7px;font:400 11.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.7);text-wrap:pretty">{{ r.desc }}</div>
+              </div>
+              <div style="font:500 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62);letter-spacing:.06em;text-transform:uppercase">{{ r.course }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ PERFIL ============ -->
+      <sc-if value="{{ isProfile }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:center;padding:24px;border-radius:18px;background:linear-gradient(120deg,rgba(198,255,61,.16),rgba(124,92,255,.2));border:1px solid rgba(245,242,236,.12)">
+          <div style="width:84px;height:84px;border-radius:24px;background:linear-gradient(140deg,#C6FF3D,#7C5CFF);display:grid;place-items:center;font:800 26px/1 'Azeret Mono',monospace;color:#141210;flex:none">SM</div>
+          <div style="flex:1;min-width:200px">
+            <h1 style="margin:0;font:800 30px/1.05 Archivo,sans-serif;letter-spacing:-.03em">Sara Mena Palacios</h1>
+            <div style="margin-top:8px;font:500 11.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.6)">10°B · Media técnica: Auxiliar en Sistemas de Información</div>
+          </div>
+          <div style="display:flex;gap:24px;flex:none">
+            <div><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.7);text-transform:uppercase">Nivel</div><div style="margin-top:7px;font:800 26px/1 Archivo,sans-serif">7</div></div>
+            <div><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.7);text-transform:uppercase">XP</div><div style="margin-top:7px;font:800 26px/1 Archivo,sans-serif">4.820</div></div>
+            <div><div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.7);text-transform:uppercase">Racha</div><div style="margin-top:7px;font:800 26px/1 Archivo,sans-serif">14</div></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px;align-items:start">
+          <div style="grid-column:span 2;min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h2 style="margin:0;font:700 17px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Insignias</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:11px;margin-top:16px">
+              <sc-for list="{{ badges }}" as="b" hint-placeholder-count="8">
+                <div style="{{ b.card }}">
+                  <div style="{{ b.icon }}">{{ b.glyph }}</div>
+                  <div style="margin-top:9px;font:600 11px/1.3 Archivo,sans-serif;text-align:center;text-wrap:pretty">{{ b.name }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+            <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Ranking 10°B</h3>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:2px">
+                <div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:700 12px/1 'Azeret Mono',monospace;color:#C6FF3D;width:20px">1</span><span style="flex:1;font:500 12.5px/1 Archivo,sans-serif">Kevin Rentería</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">5.410</span></div>
+                <div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:700 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7);width:20px">2</span><span style="flex:1;font:500 12.5px/1 Archivo,sans-serif">Luisa Córdoba</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">5.020</span></div>
+                <div style="display:flex;gap:12px;align-items:center;padding:11px 10px;border-radius:9px;background:rgba(124,92,255,.16);border:1px solid rgba(124,92,255,.35)"><span style="font:700 12px/1 'Azeret Mono',monospace;color:#7C5CFF;width:20px">3</span><span style="flex:1;font:700 12.5px/1 Archivo,sans-serif">Sara Mena</span><span style="font:700 11px/1 'Azeret Mono',monospace">4.820</span></div>
+                <div style="display:flex;gap:12px;align-items:center;padding:10px 0"><span style="font:700 12px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7);width:20px">4</span><span style="flex:1;font:500 12.5px/1 Archivo,sans-serif">Andrés Mena</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">4.605</span></div>
+              </div>
+            </div>
+            <div style="padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Certificados</h3>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:9px">
+                <div style="padding:12px;border-radius:11px;background:rgba(245,242,236,.04);display:flex;gap:11px;align-items:center"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#C6FF3D;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">2025</span><span style="font:500 12px/1.35 Archivo,sans-serif">Fundamentos de programación</span></div>
+                <div style="padding:12px;border-radius:11px;background:rgba(245,242,236,.04);display:flex;gap:11px;align-items:center"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#C6FF3D;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">2025</span><span style="font:500 12px/1.35 Archivo,sans-serif">Excel intermedio</span></div>
+                <div style="padding:12px;border-radius:11px;border:1px dashed rgba(245,242,236,.16);display:flex;gap:11px;align-items:center"><span style="flex:none;padding:4px 7px;border-radius:5px;background:rgba(245,242,236,.12);color:rgba(245,242,236,.7);font:700 8.5px/1 'Azeret Mono',monospace">62%</span><span style="font:500 12px/1.35 Archivo,sans-serif;color:rgba(245,242,236,.55)">Fullstack en JavaScript</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CONSTRUCTOR ICFES (DOCENTE) ============ -->
+      <sc-if value="{{ isBuildExam }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Docente · constructor de evaluaciones</div>
+            <h1 style="margin:9px 0 0;font:800 29px/1.05 Archivo,sans-serif;letter-spacing:-.03em">Nuevo simulacro tipo ICFES</h1>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+            <span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Borrador guardado 14:02</span>
+            <div onClick="{{ goIcfes }}" style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Previsualizar</div>
+            <div style="padding:11px 19px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Publicar a 10°B</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:14px;align-items:start">
+          <div style="min-width:0;padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Configuración</div>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px">
+              <div><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Nombre</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:500 12.5px/1.2 Archivo,sans-serif">Simulacro 4 · Periodo 3</div></div>
+              <div style="display:flex;gap:9px">
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Preguntas</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12.5px/1.2 'Azeret Mono',monospace">50</div></div>
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Tiempo</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12.5px/1.2 'Azeret Mono',monospace">1h 45m</div></div>
+              </div>
+              <div>
+                <div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Competencias</div>
+                <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+                  <span style="padding:6px 11px;border-radius:18px;background:rgba(198,255,61,.14);border:1px solid rgba(198,255,61,.42);font:600 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D">Lectura crítica ×20</span>
+                  <span style="padding:6px 11px;border-radius:18px;background:rgba(198,255,61,.14);border:1px solid rgba(198,255,61,.42);font:600 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D">Razonam. cuant. ×15</span>
+                  <span style="padding:6px 11px;border-radius:18px;background:rgba(124,92,255,.18);border:1px solid rgba(124,92,255,.42);font:600 10.5px/1 'Azeret Mono',monospace;color:#F5F2EC">Tecnología ×15</span>
+                  <span style="padding:6px 11px;border-radius:18px;border:1px dashed rgba(245,242,236,.24);font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.68);cursor:pointer">+ añadir</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1px;margin-top:2px">
+                <sc-for list="{{ examOpts }}" as="o" hint-placeholder-count="5">
+                  <div onClick="{{ o.go }}" style="display:flex;align-items:center;gap:11px;padding:9px 0;cursor:pointer">
+                    <span style="{{ o.track }}"><span style="{{ o.knob }}"></span></span>
+                    <span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif;color:rgba(245,242,236,.86)">{{ o.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="grid-column:span 2;min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
+              <h2 style="margin:0;font:700 17px/1.2 Archivo,sans-serif;letter-spacing:-.01em">Pregunta 12 · editor</h2>
+              <div style="display:flex;gap:6px">
+                <span style="padding:5px 10px;border-radius:7px;background:rgba(245,242,236,.06);font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.74)">Dificultad media</span>
+                <span style="padding:5px 10px;border-radius:7px;background:rgba(245,242,236,.06);font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.74)">Lectura crítica</span>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Contexto / lectura</div>
+              <div style="margin-top:7px;padding:14px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.1);font:400 12.5px/1.7 Archivo,sans-serif;color:rgba(245,242,236,.8);text-wrap:pretty">Toda organización que digitaliza sus procesos empieza a producir registros: ventas, matrículas, inventarios. Ese registro por sí solo no informa nada…</div>
+            </div>
+            <div style="margin-top:14px">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Enunciado</div>
+              <div style="margin-top:7px;padding:14px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(124,92,255,.4);font:500 13.5px/1.55 Archivo,sans-serif;text-wrap:pretty">Según el texto, la diferencia esencial entre un archivo y una base de datos radica en</div>
+            </div>
+            <div style="margin-top:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+                <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Opciones · marca la correcta</div>
+                <span style="font:600 10px/1 'Azeret Mono',monospace;color:#C6FF3D;flex:none">{{ keyLabel }}</span>
+              </div>
+              <div style="margin-top:9px;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ authorOpts }}" as="o" hint-placeholder-count="4">
+                  <div onClick="{{ o.go }}" style="{{ o.row }}">
+                    <span style="{{ o.radio }}">{{ o.mark }}</span>
+                    <span style="flex:1;min-width:0;font:500 13px/1.5 Archivo,sans-serif;text-wrap:pretty">{{ o.text }}</span>
+                    <span style="font:600 10px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62);flex:none">{{ o.k }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="margin-top:14px">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Retroalimentación al estudiante</div>
+              <div style="margin-top:7px;padding:13px;border-radius:11px;background:rgba(198,255,61,.07);border:1px solid rgba(198,255,61,.3);font:400 12.5px/1.65 Archivo,sans-serif;color:rgba(245,242,236,.84);text-wrap:pretty">El texto lo dice de forma explícita: la diferencia no es el tamaño, sino la capacidad de consultar sin abrir.</div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
+              <div style="padding:10px 15px;border-radius:9px;background:#7C5CFF;color:#fff;font:700 12px/1 Archivo,sans-serif;cursor:pointer">Guardar pregunta</div>
+              <div style="padding:10px 15px;border-radius:9px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Duplicar</div>
+              <div style="padding:10px 15px;border-radius:9px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Enviar al banco</div>
+              <div style="margin-left:auto;padding:10px 15px;border-radius:9px;border:1px solid rgba(255,107,74,.45);color:#FF8465;font:600 12px/1 Archivo,sans-serif;cursor:pointer">Eliminar</div>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 14px/1.2 Archivo,sans-serif">Estructura</h3>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:5px;margin-top:12px">
+                <sc-for list="{{ buildGrid }}" as="g" hint-placeholder-count="50">
+                  <div style="{{ g.style }}">{{ g.n }}</div>
+                </sc-for>
+              </div>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:6px;font:500 10.5px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.68)">
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:#C6FF3D"></span>Lista</div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:#7C5CFF"></span>Editando</div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="width:11px;height:11px;border-radius:3px;background:rgba(245,242,236,.14)"></span>Vacía</div>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <h3 style="margin:0;font:700 14px/1.2 Archivo,sans-serif">Traer del banco</h3>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="padding:11px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><div style="font:600 11.5px/1.35 Archivo,sans-serif">Inferencia en texto expositivo</div><div style="margin-top:4px;font:400 10px/1.35 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Lectura crítica · usada 4 veces · 58% acierto</div></div>
+                <div style="padding:11px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><div style="font:600 11.5px/1.35 Archivo,sans-serif">Regla de tres con porcentaje</div><div style="margin-top:4px;font:400 10px/1.35 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Razonam. cuant. · usada 7 veces · 71% acierto</div></div>
+                <div style="padding:11px;border-radius:10px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><div style="font:600 11.5px/1.35 Archivo,sans-serif">Normalización de tablas</div><div style="margin-top:4px;font:400 10px/1.35 'Azeret Mono',monospace;color:rgba(245,242,236,.66)">Tecnología · nueva</div></div>
+              </div>
+              <div style="margin-top:14px;padding:12px;border-radius:10px;border:1px dashed rgba(124,92,255,.45);background:rgba(124,92,255,.08);text-align:center;font:600 11.5px/1.35 Archivo,sans-serif;cursor:pointer">Importar 20 preguntas desde .csv</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CONSTRUCTOR DE LAB ============ -->
+      <sc-if value="{{ isBuildLab }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Docente · examen de programación autocalificado</div>
+            <h1 style="margin:9px 0 0;font:800 29px/1.05 Archivo,sans-serif;letter-spacing:-.03em">Crear laboratorio con pruebas</h1>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+            <div style="display:flex;padding:3px;border:1px solid rgba(245,242,236,.13);border-radius:10px;background:rgba(245,242,236,.04)">
+              <sc-for list="{{ langs }}" as="l" hint-placeholder-count="4">
+                <div onClick="{{ l.go }}" style="{{ l.style }}">{{ l.label }}</div>
+              </sc-for>
+            </div>
+            <div onClick="{{ goCode }}" style="padding:11px 19px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Publicar lab</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:start">
+          <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Enunciado del reto</div>
+              <div style="margin-top:8px;padding:13px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.11);font:400 12.5px/1.7 Archivo,sans-serif;color:rgba(245,242,236,.84);text-wrap:pretty">Crea el componente ListaEstudiantes que reciba un arreglo por props y devuelva un &lt;ul&gt; con un ítem por estudiante. Cada ítem debe llevar una key estable.</div>
+              <div style="margin-top:14px;display:flex;gap:9px">
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Puntos</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12.5px/1.2 'Azeret Mono',monospace">20</div></div>
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Intentos</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12.5px/1.2 'Azeret Mono',monospace">3</div></div>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:1px">
+                <sc-for list="{{ labOpts }}" as="o" hint-placeholder-count="5">
+                  <div onClick="{{ o.go }}" style="display:flex;align-items:center;gap:11px;padding:9px 0;cursor:pointer">
+                    <span style="{{ o.track }}"><span style="{{ o.knob }}"></span></span>
+                    <span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif;color:rgba(245,242,236,.86)">{{ o.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Pistas progresivas</div>
+              <div style="margin-top:11px;display:flex;flex-direction:column;gap:7px">
+                <div style="padding:10px 12px;border-radius:10px;background:rgba(245,242,236,.04);font:400 11.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.82)"><span style="font:700 10px/1 'Azeret Mono',monospace;color:#C6FF3D">1 ·</span> El callback de .map() recibe el elemento y su índice.</div>
+                <div style="padding:10px 12px;border-radius:10px;background:rgba(245,242,236,.04);font:400 11.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.82)"><span style="font:700 10px/1 'Azeret Mono',monospace;color:#C6FF3D">2 ·</span> La key debe venir del id, no del índice.</div>
+                <div style="padding:10px 12px;border-radius:10px;border:1px dashed rgba(245,242,236,.18);font:500 11.5px/1.5 Archivo,sans-serif;color:rgba(245,242,236,.66);cursor:pointer">+ Añadir pista</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="grid-column:span 2;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="border-radius:16px;background:#0E0C0B;border:1px solid rgba(245,242,236,.1);overflow:hidden">
+              <div style="display:flex;align-items:center;border-bottom:1px solid rgba(245,242,236,.09);background:#151312">
+                <sc-for list="{{ labTabs }}" as="t" hint-placeholder-count="3">
+                  <div onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</div>
+                </sc-for>
+                <span style="margin-left:auto;padding:0 16px;font:500 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.62)">{{ labRunner }}</span>
+              </div>
+              <div class="om-sb" style="padding:16px 0;font:400 13px/1.85 'Azeret Mono',monospace;overflow-x:auto;min-height:212px">{{ labCode }}</div>
+            </div>
+
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
+                <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Casos de prueba</h3>
+                <span style="font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.68)">3 visibles · 2 ocultos para el estudiante</span>
+              </div>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ tests }}" as="t" hint-placeholder-count="5">
+                  <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.08)">
+                    <span style="{{ t.badge }}">{{ t.pts }}</span>
+                    <div style="flex:1;min-width:0">
+                      <div style="font:500 12.5px/1.35 Archivo,sans-serif">{{ t.name }}</div>
+                      <div style="margin-top:4px;font:400 10.5px/1.4 'Azeret Mono',monospace;color:rgba(245,242,236,.66);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.assert }}</div>
+                    </div>
+                    <span style="{{ t.vis }}">{{ t.visLabel }}</span>
+                  </div>
+                </sc-for>
+                <div style="padding:12px;border-radius:11px;border:1px dashed rgba(198,255,61,.34);background:rgba(198,255,61,.05);text-align:center;font:600 12px/1.35 Archivo,sans-serif;color:#C6FF3D;cursor:pointer">+ Añadir caso de prueba</div>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+                <div onClick="{{ runCode }}" style="padding:10px 16px;border-radius:9px;background:#7C5CFF;color:#fff;font:700 12px/1 Archivo,sans-serif;cursor:pointer">▶ Correr contra la solución</div>
+                <div onClick="{{ goCode }}" style="padding:10px 16px;border-radius:9px;border:1px solid rgba(245,242,236,.16);font:600 12px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Ver como estudiante</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ NOTAS ============ -->
+      <sc-if value="{{ isGrades }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#7C5CFF;text-transform:uppercase">Docente · planilla de notas · Periodo 3</div>
+            <h1 style="margin:9px 0 0;font:800 29px/1.05 Archivo,sans-serif;letter-spacing:-.03em">10°B — Tecnología e Informática</h1>
+          </div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+            <span style="font:600 11px/1 'Azeret Mono',monospace;color:#C6FF3D">● 48 entregas sin calificar</span>
+            <div style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Exportar a Excel</div>
+            <div style="padding:11px 19px;border-radius:10px;background:#7C5CFF;color:#fff;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Publicar notas</div>
+          </div>
+        </div>
+
+        <div style="border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09);overflow:hidden">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px;border-bottom:1px solid rgba(245,242,236,.09);align-items:center">
+            <span style="padding:6px 11px;border-radius:18px;background:rgba(124,92,255,.18);border:1px solid rgba(124,92,255,.42);font:600 10.5px/1 'Azeret Mono',monospace">Talleres 30%</span>
+            <span style="padding:6px 11px;border-radius:18px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.78)">Labs 30%</span>
+            <span style="padding:6px 11px;border-radius:18px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.78)">Simulacros 25%</span>
+            <span style="padding:6px 11px;border-radius:18px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.78)">Actitudinal 15%</span>
+            <span style="margin-left:auto;font:500 10.5px/1.6 'Azeret Mono',monospace;color:rgba(245,242,236,.68)">Clic en una celda para calificar · autoguardado</span>
+          </div>
+          <div class="om-sb" style="overflow-x:auto">
+            <table style="border-collapse:collapse;width:100%;min-width:780px">
+              <tr style="background:rgba(245,242,236,.04)">
+                <th style="position:sticky;left:0;background:#211E1B;padding:11px 16px;text-align:left;font:700 10.5px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.76);border-bottom:1px solid rgba(245,242,236,.1)">Estudiante</th>
+                <sc-for list="{{ gradeCols }}" as="c" hint-placeholder-count="7">
+                  <th style="padding:11px 8px;font:600 9.5px/1.45 'Azeret Mono',monospace;color:rgba(245,242,236,.76);border-bottom:1px solid rgba(245,242,236,.1);min-width:78px;text-align:center">{{ c.label }}<br><span style="color:rgba(245,242,236,.6)">{{ c.max }}</span></th>
+                </sc-for>
+                <th style="padding:11px 14px;font:700 10.5px/1.3 'Azeret Mono',monospace;color:#C6FF3D;border-bottom:1px solid rgba(245,242,236,.1);text-align:right">DEF.</th>
+              </tr>
+              <sc-for list="{{ gradeRows }}" as="r" hint-placeholder-count="8">
+                <tr>
+                  <td style="position:sticky;left:0;background:#1C1A17;padding:11px 16px;font:500 12.5px/1.3 Archivo,sans-serif;white-space:nowrap;border-bottom:1px solid rgba(245,242,236,.06)">{{ r.name }}</td>
+                  <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="7">
+                    <td style="{{ c.td }}">{{ c.v }}</td>
+                  </sc-for>
+                  <td style="{{ r.finalTd }}">{{ r.final }}</td>
+                </tr>
+              </sc-for>
+              <tr>
+                <td style="position:sticky;left:0;background:#211E1B;padding:12px 16px;font:700 11px/1.3 'Azeret Mono',monospace;color:rgba(245,242,236,.76);border-top:1px solid rgba(245,242,236,.12)">PROMEDIO</td>
+                <sc-for list="{{ gradeAvg }}" as="a" hint-placeholder-count="7">
+                  <td style="padding:12px 8px;text-align:center;font:700 11.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.76);border-top:1px solid rgba(245,242,236,.12)">{{ a.v }}</td>
+                </sc-for>
+                <td style="padding:12px 14px;text-align:right;font:800 12.5px/1 'Azeret Mono',monospace;color:#C6FF3D;border-top:1px solid rgba(245,242,236,.12)">3.7</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px">
+          <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Cola de calificación</h3>
+            <div style="margin-top:13px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:11px;align-items:center;padding:12px;border-radius:11px;background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.34);cursor:pointer"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#7C5CFF;color:#fff;font:700 8.5px/1 'Azeret Mono',monospace">AUTO</span><span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif">Lab 12 · .map() — 31 entregas calificadas por las pruebas</span></div>
+              <div style="display:flex;gap:11px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#FF6B4A;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">MANUAL</span><span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif">Informe APA · 17 archivos .docx por revisar</span></div>
+              <div style="display:flex;gap:11px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);cursor:pointer" style-hover="background:rgba(245,242,236,.08)"><span style="flex:none;padding:4px 7px;border-radius:5px;background:#FF6B4A;color:#141210;font:700 8.5px/1 'Azeret Mono',monospace">MANUAL</span><span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif">Sustentación .pptx · 12 por revisar</span></div>
+            </div>
+          </div>
+          <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Distribución del periodo</h3>
+            <div style="margin-top:18px;display:flex;align-items:flex-end;gap:6px;height:104px">
+              <sc-for list="{{ distro }}" as="d" hint-placeholder-count="5">
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:7px">
+                  <div style="{{ d.bar }}"></div>
+                  <div style="font:600 9.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.68);text-align:center">{{ d.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px;font:400 12px/1.6 Archivo,sans-serif;color:rgba(245,242,236,.74);text-wrap:pretty">6 estudiantes por debajo de 3.0. La planilla los marca en rojo y sugiere plan de recuperación.</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ PUBLICAR ACTIVIDAD ============ -->
+      <sc-if value="{{ isPublish }}">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font:600 9.5px/1 'Azeret Mono',monospace;letter-spacing:.16em;color:#C6FF3D;text-transform:uppercase">Docente · publicar contenido</div>
+            <h1 style="margin:9px 0 0;font:800 29px/1.05 Archivo,sans-serif;letter-spacing:-.03em">Subir taller, actividad o laboratorio</h1>
+          </div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <div style="padding:11px 17px;border-radius:10px;border:1px solid rgba(245,242,236,.16);font:600 12.5px/1 Archivo,sans-serif;cursor:pointer" style-hover="border-color:#C6FF3D">Guardar borrador</div>
+            <div onClick="{{ goCurso }}" style="padding:11px 19px;border-radius:10px;background:#C6FF3D;color:#141210;font:700 12.5px/1 Archivo,sans-serif;cursor:pointer">Publicar</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;align-items:start">
+          <div style="grid-column:span 2;min-width:0;padding:20px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+            <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Tipo de contenido</div>
+            <div style="margin-top:11px;display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:8px">
+              <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="6">
+                <div onClick="{{ k.go }}" style="{{ k.card }}">
+                  <div style="{{ k.glyphStyle }}">{{ k.glyph }}</div>
+                  <div style="margin-top:9px;font:600 11.5px/1.3 Archivo,sans-serif;text-align:center">{{ k.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:18px;display:flex;flex-direction:column;gap:13px">
+              <div><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Título</div><div style="margin-top:7px;padding:12px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:500 13px/1.4 Archivo,sans-serif">Taller 09 — Tablas dinámicas con datos de la tienda escolar</div></div>
+              <div><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Instrucciones</div><div style="margin-top:7px;padding:13px 14px;border-radius:11px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:400 12.5px/1.7 Archivo,sans-serif;color:rgba(245,242,236,.84);min-height:74px;text-wrap:pretty">Descarga la base de ventas, crea una tabla dinámica por producto y mes, y agrega un gráfico de columnas. Entrega el archivo con tu nombre: Taller09_Apellido.xlsx</div></div>
+            </div>
+            <div style="margin-top:16px;padding:24px;border-radius:14px;border:1px dashed rgba(124,92,255,.45);background:rgba(124,92,255,.08);text-align:center">
+              <div style="font:700 13.5px/1.3 Archivo,sans-serif">Arrastra los archivos del taller</div>
+              <div style="margin-top:7px;font:400 11px/1.55 'Azeret Mono',monospace;color:rgba(245,242,236,.7)">PDF · DOCX · XLSX · PPTX · SQL · ZIP · MP4 — máx 200 MB</div>
+              <div style="margin-top:14px;display:inline-block;padding:10px 18px;border-radius:9px;background:#7C5CFF;color:#fff;font:700 12px/1 Archivo,sans-serif;cursor:pointer">Seleccionar archivos</div>
+            </div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ uploads }}" as="u" hint-placeholder-count="3">
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:11px;background:rgba(245,242,236,.04);border:1px solid rgba(245,242,236,.08)">
+                  <span style="{{ u.badge }}">{{ u.ext }}</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font:500 12.5px/1.3 Archivo,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ u.name }}</div>
+                    <div style="margin-top:6px;height:3px;border-radius:2px;background:rgba(245,242,236,.14);overflow:hidden"><div style="{{ u.fill }}"></div></div>
+                  </div>
+                  <span style="{{ u.statusStyle }}">{{ u.status }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="font:600 9px/1 'Azeret Mono',monospace;letter-spacing:.14em;color:rgba(245,242,236,.66);text-transform:uppercase">Asignar a</div>
+              <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+                <span style="padding:6px 11px;border-radius:18px;background:rgba(198,255,61,.14);border:1px solid rgba(198,255,61,.42);font:600 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D">10°B ×34</span>
+                <span style="padding:6px 11px;border-radius:18px;background:rgba(198,255,61,.14);border:1px solid rgba(198,255,61,.42);font:600 10.5px/1 'Azeret Mono',monospace;color:#C6FF3D">10°A ×31</span>
+                <span style="padding:6px 11px;border-radius:18px;border:1px dashed rgba(245,242,236,.24);font:600 10.5px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.7);cursor:pointer">+ grupo</span>
+              </div>
+              <div style="margin-top:16px;display:flex;gap:9px">
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Abre</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12px/1.2 'Azeret Mono',monospace">08 sep</div></div>
+                <div style="flex:1;min-width:0"><div style="font:600 10px/1 'Azeret Mono',monospace;letter-spacing:.1em;color:rgba(245,242,236,.7);text-transform:uppercase">Cierra</div><div style="margin-top:7px;padding:11px 13px;border-radius:10px;background:rgba(245,242,236,.05);border:1px solid rgba(245,242,236,.12);font:600 12px/1.2 'Azeret Mono',monospace">15 sep</div></div>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:1px">
+                <sc-for list="{{ pubOpts }}" as="o" hint-placeholder-count="4">
+                  <div onClick="{{ o.go }}" style="display:flex;align-items:center;gap:11px;padding:9px 0;cursor:pointer">
+                    <span style="{{ o.track }}"><span style="{{ o.knob }}"></span></span>
+                    <span style="flex:1;min-width:0;font:500 12px/1.4 Archivo,sans-serif;color:rgba(245,242,236,.86)">{{ o.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:18px;border-radius:16px;background:#1C1A17;border:1px solid rgba(245,242,236,.09)">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <h3 style="margin:0;font:700 15px/1.2 Archivo,sans-serif">Rúbrica</h3>
+                <span style="font:700 11px/1 'Azeret Mono',monospace;color:#C6FF3D">100 pts</span>
+              </div>
+              <div style="margin-top:13px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12px/1.4 Archivo,sans-serif">Tabla dinámica correcta</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8);flex:none">40</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12px/1.4 Archivo,sans-serif">Gráfico legible y rotulado</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8);flex:none">30</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid rgba(245,242,236,.07)"><span style="font:500 12px/1.4 Archivo,sans-serif">Nombre de archivo y formato</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8);flex:none">10</span></div>
+                <div style="display:flex;justify-content:space-between;gap:10px"><span style="font:500 12px/1.4 Archivo,sans-serif">Puntualidad</span><span style="font:600 11px/1 'Azeret Mono',monospace;color:rgba(245,242,236,.8);flex:none">20</span></div>
+              </div>
+              <div style="margin-top:14px;padding:11px;border-radius:10px;border:1px dashed rgba(245,242,236,.18);text-align:center;font:600 11.5px/1.35 Archivo,sans-serif;color:rgba(245,242,236,.74);cursor:pointer">+ Criterio</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;modoEntrenamiento&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Simulacro ICFES&quot;},&quot;mostrarGamificacion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Gamificación&quot;}}">
+const A = "#7C5CFF", L = "#C6FF3D", R = "#FF6B4A";
+
+const NAV = [
+  ["home", "Inicio", "01"], ["curso", "Mis cursos", "02"], ["video", "Reproductor", "03"],
+  ["icfes", "Simulacro ICFES", "04"], ["results", "Resultados", "05"], ["code", "Lab · Código", "06"],
+  ["excel", "Lab · Excel", "07"], ["office", "Lab · Word / PPT", "08"], ["sql", "Lab · Bases de datos", "09"],
+  ["teacher", "Panel docente", "10"], ["buildExam", "Crear examen ICFES", "11"], ["buildLab", "Crear lab de código", "12"],
+  ["grades", "Notas del periodo", "13"], ["publish", "Subir taller", "14"],
+  ["lib", "Material de apoyo", "15"], ["profile", "Perfil y logros", "16"]
+];
+
+const AUTH = ["login", "register", "forgot"];
+const TEACHER = ["teacher", "buildExam", "buildLab", "grades", "publish"];
+
+const AUTHOR_OPTS = [
+  "el volumen de información que cada uno puede almacenar.",
+  "la posibilidad de consultar los datos sin necesidad de abrirlos.",
+  "el software con el que fueron creados originalmente.",
+  "la cantidad de usuarios que pueden acceder a la vez."
+];
+
+const TESTS = [
+  ["Renderiza un <li> por estudiante", "expect(items).toHaveLength(3)", 8, 1],
+  ["Usa key estable tomada del id", "expect(first.key).toBe('e-1')", 6, 1],
+  ["No rompe con arreglo vacío", "expect(render([])).not.toThrow()", 3, 1],
+  ["Ignora estudiantes sin nombre", "oculto para el estudiante", 2, 0],
+  ["No muta el arreglo original", "oculto para el estudiante", 1, 0]
+];
+
+const LAB_CODE = {
+  starter: [
+    ["export default function", " ListaEstudiantes({ estudiantes }) {", 1],
+    ["  // TODO:", " devuelve un <ul> con un <li> por estudiante", 0],
+    ["  return null;", "", 0],
+    ["}", "", 0]
+  ],
+  solution: [
+    ["export default function", " ListaEstudiantes({ estudiantes }) {", 1],
+    ["  return (", "", 0],
+    ["    <ul className=\"lista\">", "", 0],
+    ["      {estudiantes.map((e) => (", "", 0],
+    ["        <li key={e.id}>{e.nombre}</li>", "", 0],
+    ["      ))}", "", 0],
+    ["    </ul>", "", 0],
+    ["  );", "", 0],
+    ["}", "", 0]
+  ],
+  tests: [
+    ["import { render } from", " '@testing-library/react';", 1],
+    ["test('un li por estudiante', () => {", "", 0],
+    ["  const { getAllByRole } = render(<ListaEstudiantes", " estudiantes={fixture} />);", 0],
+    ["  expect(getAllByRole('listitem')).toHaveLength(3);", "", 0],
+    ["});", "", 0]
+  ]
+};
+
+const QS = [
+  { comp: "Lectura crítica", stem: "Según el texto, la diferencia esencial entre un archivo y una base de datos radica en",
+    opts: ["el volumen de información que cada uno puede almacenar.", "la posibilidad de consultar los datos sin necesidad de abrirlos.", "el software con el que fueron creados originalmente.", "la cantidad de usuarios que pueden acceder a la vez."], ok: 1,
+    fb: "El texto lo dice de forma explícita: «la diferencia entre archivo y base de datos no es el tamaño, sino la capacidad de consultar sin abrir». Las demás opciones introducen criterios que el autor nunca menciona." },
+  { comp: "Lectura crítica", stem: "La expresión «deja de ser usuario y empieza a ser administrador de su propia información» cumple la función de",
+    opts: ["refutar el argumento presentado en el primer párrafo.", "cerrar el texto atribuyendo un valor formativo al conocimiento técnico.", "citar la opinión de una autoridad en el tema.", "introducir un nuevo problema que el texto no resuelve."], ok: 1,
+    fb: "Es una conclusión valorativa: convierte el dominio técnico en un cambio de rol del lector. No refuta nada previo ni abre un problema nuevo." },
+  { comp: "Razonamiento cuantitativo", stem: "Una tabla registra 240 matrículas; el 35% corresponde a la media técnica. ¿Cuántas matrículas son de media técnica?",
+    opts: ["74", "84", "96", "105"], ok: 1,
+    fb: "240 × 0,35 = 84. Un atajo útil: 10% son 24, entonces 30% son 72 y 5% son 12 → 84." }
+];
+
+const RES = [
+  ["PDF", R, "Guía de fórmulas de Excel", "45 fórmulas con ejemplo resuelto y errores frecuentes.", "Excel", "2.4 MB"],
+  ["VIDEO", A, "Serie: normalización 1FN a 3FN", "Cinco clases cortas con ejercicios al final de cada una.", "Bases de datos", "5 videos"],
+  ["XLSX", L, "Plantilla de tabla dinámica", "Base de ventas lista para practicar BUSCARV y filtros.", "Excel", "180 KB"],
+  ["REPO", L, "starter-fullstack-js", "Vite + React + Express con scripts ya configurados.", "Fullstack JS", "GitHub"],
+  ["PDF", R, "Banco ICFES · lectura crítica", "120 preguntas con clave de respuesta y justificación.", "ICFES", "6.1 MB"],
+  ["SLD", A, "Ciclo de vida del componente", "Diapositivas de clase con notas del docente.", "Frontend", "24 slides"],
+  ["DOCX", "#5B8DEF", "Formato de informe APA", "Estilos, portada y tabla de contenido automática.", "Derecho laboral", "310 KB"],
+  ["VIDEO", A, "Modelo Canvas explicado", "Cómo llenar cada bloque con un caso del barrio.", "Emprendimiento", "18 min"],
+  ["SQL", L, "colegio_db.sql", "Volcado con 3 tablas y 200 registros de prueba.", "Bases de datos", "88 KB"]
+];
+
+const BADGES = [
+  ["★", "Racha de 14 días", 1], ["◆", "Primer JOIN", 1], ["▲", "BUSCARV maestro", 1],
+  ["●", "10 labs seguidos", 1], ["⬢", "Top 3 del grupo", 1], ["✦", "Simulacro completo", 1],
+  ["◇", "Deploy en Next.js", 0], ["✚", "Mentor de compañero", 0]
+];
+
+class Component extends DCLogic {
+  state = {
+    screen: "home", q: 0, picked: {}, sec: 6180, train: true,
+    open: 1, office: "word", ran: false, sqlRan: true, note: "", chip: 0, notes: 2,
+    authorKey: 1, lang: "js", labTab: "solution", labFlags: [1, 1, 0, 1, 0],
+    examFlags: [1, 1, 0, 1, 0], pubFlags: [1, 0, 1, 0], kind: 0, remember: true, resetSent: false,
+    grade: "10°B"
+  };
+
+  toggle(field, i) {
+    return () => this.setState(st => {
+      const arr = st[field].slice();
+      arr[i] = arr[i] ? 0 : 1;
+      return { [field]: arr };
+    });
+  }
+
+  sw(on) {
+    return {
+      track: "flex:none;width:34px;height:19px;border-radius:12px;position:relative;transition:background .16s;background:" + (on ? "#C6FF3D" : "rgba(245,242,236,.18)"),
+      knob: "position:absolute;top:2px;left:" + (on ? "17px" : "2px") + ";width:15px;height:15px;border-radius:50%;transition:left .16s;background:" + (on ? "#141210" : "#F5F2EC")
+    };
+  }
+
+  codeLines(rows) {
+    return rows.map(([head, tail], i) =>
+      React.createElement("div", { key: i, style: { display: "flex" } },
+        React.createElement("span", { style: { flex: "none", width: 46, textAlign: "right", paddingRight: 14, color: "rgba(245,242,236,.4)" } }, i + 1),
+        React.createElement("span", null,
+          React.createElement("span", { style: { color: "#7C5CFF" } }, head),
+          React.createElement("span", { style: { color: "#F5F2EC" } }, tail))));
+  }
+
+  componentDidMount() {
+    this.t = setInterval(() => this.setState(s => ({ sec: Math.max(0, s.sec - 1) })), 1000);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+
+  go(screen) { return () => this.setState({ screen }); }
+
+  navStyle(active) {
+    return "display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;font:600 12.5px/1.35 Archivo,sans-serif;position:relative;" +
+      (active ? "background:rgba(124,92,255,.18);color:#F5F2EC" : "color:rgba(245,242,236,.6)");
+  }
+
+  renderVals() {
+    const s = this.state, train = this.props.modoEntrenamiento ?? s.train;
+    const gam = this.props.mostrarGamificacion ?? true;
+    const q = QS[s.q % QS.length], sel = s.picked[s.q];
+    const mm = String(Math.floor(s.sec / 60)).padStart(2, "0"), ss = String(s.sec % 60).padStart(2, "0");
+
+    const chipLabels = ["Todo", "Excel", "Word", "PowerPoint", "Bases de datos", "Fullstack JS", "ICFES", "Emprendimiento"];
+
+    return {
+      nav: NAV.map(([id, label, n]) => ({
+        n, label, go: this.go(id), style: this.navStyle(s.screen === id),
+        bar: s.screen === id ? "position:absolute;left:0;top:8px;bottom:8px;width:2px;border-radius:2px;background:" + A : "display:none"
+      })),
+      isHome: s.screen === "home", isCurso: s.screen === "curso", isVideo: s.screen === "video",
+      isIcfes: s.screen === "icfes", isResults: s.screen === "results", isCode: s.screen === "code",
+      isExcel: s.screen === "excel", isOffice: s.screen === "office", isSql: s.screen === "sql",
+      isTeacher: s.screen === "teacher", isLib: s.screen === "lib", isProfile: s.screen === "profile",
+      isBuildExam: s.screen === "buildExam", isBuildLab: s.screen === "buildLab",
+      isGrades: s.screen === "grades", isPublish: s.screen === "publish",
+
+      isAuth: AUTH.indexOf(s.screen) > -1, isApp: AUTH.indexOf(s.screen) < 0,
+      isLogin: s.screen === "login", isRegister: s.screen === "register", isForgot: s.screen === "forgot",
+      goLogin: this.go("login"), goRegister: this.go("register"), goForgot: this.go("forgot"),
+      goHome: this.go("home"), goTeacherLogin: this.go("teacher"),
+      toggleRemember: () => this.setState({ remember: !s.remember }),
+      remTrack: this.sw(s.remember).track, remKnob: this.sw(s.remember).knob,
+      sendReset: () => this.setState({ resetSent: true }), resetSent: s.resetSent,
+      grades: ["9°A", "9°B", "10°A", "10°B", "11°A", "11°B"].map(label => ({
+        label, go: () => this.setState({ grade: label }),
+        style: "padding:8px 13px;border-radius:9px;cursor:pointer;font:600 11.5px/1 'Azeret Mono',monospace;border:1px solid " +
+          (s.grade === label ? L + ";background:rgba(198,255,61,.14);color:" + L : "rgba(245,242,236,.14);color:rgba(245,242,236,.7)")
+      })),
+
+      keyLabel: "clave: " + "ABCD"[s.authorKey],
+      authorOpts: AUTHOR_OPTS.map((text, i) => {
+        const ok = s.authorKey === i;
+        return {
+          text, k: "ABCD"[i], mark: ok ? "✓" : "",
+          go: () => this.setState({ authorKey: i }),
+          row: "display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:11px;cursor:pointer;border:1px solid " +
+            (ok ? "rgba(198,255,61,.45);background:rgba(198,255,61,.1)" : "rgba(245,242,236,.11);background:rgba(245,242,236,.03)"),
+          radio: "flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 11px/1 'Azeret Mono',monospace;" +
+            (ok ? "background:" + L + ";color:#141210" : "border:1px solid rgba(245,242,236,.28);color:transparent")
+        };
+      }),
+      examOpts: ["Mezclar el orden de las preguntas", "Mezclar las opciones de respuesta", "Mostrar la clave al terminar", "Cronómetro visible para el estudiante", "Permitir salir y retomar"]
+        .map((label, i) => ({ label, go: this.toggle("examFlags", i), track: this.sw(s.examFlags[i]).track, knob: this.sw(s.examFlags[i]).knob })),
+      buildGrid: Array.from({ length: 50 }, (_, i) => ({
+        n: i + 1,
+        style: "aspect-ratio:1;display:grid;place-items:center;border-radius:6px;font:600 10px/1 'Azeret Mono',monospace;" +
+          (i === 11 ? "background:" + A + ";color:#fff" : i < 24 ? "background:" + L + ";color:#141210" : "background:rgba(245,242,236,.14);color:rgba(245,242,236,.62)")
+      })),
+
+      langs: [["js", "JavaScript"], ["py", "Python"], ["sql", "SQL"], ["html", "HTML/CSS"]].map(([id, label]) => ({
+        label, go: () => this.setState({ lang: id }), style: this.pill(s.lang === id)
+      })),
+      labTabs: [["starter", "starter.jsx"], ["solution", "solucion.jsx"], ["tests", "pruebas.test.js"]].map(([id, label]) => ({
+        label, go: () => this.setState({ labTab: id }),
+        style: "padding:12px 16px;cursor:pointer;font:600 11.5px/1 'Azeret Mono',monospace;" +
+          (s.labTab === id ? "color:#F5F2EC;border-bottom:2px solid #C6FF3D" : "color:rgba(245,242,236,.5)")
+      })),
+      labRunner: s.lang === "py" ? "pytest · python 3.12" : s.lang === "sql" ? "MySQL 8 · sandbox" : "vitest · node 22",
+      labCode: this.codeLines(LAB_CODE[s.labTab] || LAB_CODE.solution),
+      labOpts: ["Autocalificar con las pruebas", "Mostrar la consola al estudiante", "Permitir copiar y pegar", "Bloquear al cerrar la pestaña", "Revisión antiplagio entre entregas"]
+        .map((label, i) => ({ label, go: this.toggle("labFlags", i), track: this.sw(s.labFlags[i]).track, knob: this.sw(s.labFlags[i]).knob })),
+      tests: TESTS.map(([name, assert, pts, visible]) => ({
+        name, assert, pts,
+        badge: "flex:none;padding:5px 8px;border-radius:6px;font:700 10px/1 'Azeret Mono',monospace;background:" + L + ";color:#141210",
+        visLabel: visible ? "visible" : "oculto",
+        vis: "flex:none;padding:5px 9px;border-radius:6px;font:600 9.5px/1 'Azeret Mono',monospace;" +
+          (visible ? "background:rgba(198,255,61,.14);color:" + L : "background:rgba(245,242,236,.08);color:rgba(245,242,236,.66)")
+      })),
+
+      gradeCols: [["T08", "5.0"], ["T09", "5.0"], ["LAB11", "20p"], ["LAB12", "20p"], ["SIM3", "500"], ["EXCEL", "5.0"], ["ACT", "5.0"]]
+        .map(([label, max]) => ({ label, max })),
+      gradeRows: [
+        ["Sara Mena", ["4.6", "4.8", "20", "20", "318", "4.9", "5.0"], "4.3"],
+        ["Kevin Rentería", ["4.9", "5.0", "20", "18", "360", "4.7", "5.0"], "4.6"],
+        ["Luisa Córdoba", ["4.2", "4.4", "16", "20", "302", "4.5", "4.8"], "4.1"],
+        ["Andrés Mena", ["3.8", "4.0", "14", "12", "288", "4.1", "4.5"], "3.9"],
+        ["Yeimy Palacios", ["3.5", "3.9", "12", "—", "271", "3.8", "4.2"], "3.7"],
+        ["Juan D. Cuesta", ["2.1", "—", "6", "—", "204", "2.4", "3.0"], "2.4"],
+        ["Brayan Moreno", ["2.8", "3.1", "10", "8", "236", "2.9", "3.5"], "2.9"],
+        ["Kelly Mosquera", ["4.0", "4.1", "18", "16", "295", "4.3", "4.6"], "4.0"]
+      ].map(([name, cells, final]) => {
+        const low = parseFloat(final) < 3;
+        return {
+          name, final,
+          finalTd: "padding:11px 14px;text-align:right;font:800 12px/1 'Azeret Mono',monospace;border-bottom:1px solid rgba(245,242,236,.06);color:" + (low ? "#FF8465" : L),
+          cells: cells.map(v => ({
+            v,
+            td: "padding:11px 8px;text-align:center;font:600 11.5px/1 'Azeret Mono',monospace;border-bottom:1px solid rgba(245,242,236,.06);cursor:pointer;color:" +
+              (v === "—" ? "#FF8465" : "rgba(245,242,236,.9)") + (v === "—" ? ";background:rgba(255,107,74,.09)" : "")
+          }))
+        };
+      }),
+      gradeAvg: ["3.7", "4.2", "14.5", "15.7", "284", "3.9", "4.5"].map(v => ({ v })),
+      distro: [["1.0–2.4", 22, R], ["2.5–2.9", 34, R], ["3.0–3.9", 78, A], ["4.0–4.5", 100, L], ["4.6–5.0", 48, L]]
+        .map(([label, h, c]) => ({ label, bar: "height:" + h + "%;border-radius:4px 4px 0 0;background:" + c })),
+
+      kinds: [["◧", "Taller"], ["◆", "Actividad"], ["▲", "Laboratorio"], ["●", "Video"], ["✦", "Lectura"], ["⬢", "Examen"]]
+        .map(([glyph, label], i) => ({
+          glyph, label, go: () => this.setState({ kind: i }),
+          card: "padding:14px 10px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;border:1px solid " +
+            (s.kind === i ? "rgba(198,255,61,.45);background:rgba(198,255,61,.1)" : "rgba(245,242,236,.1);background:rgba(245,242,236,.03)"),
+          glyphStyle: "width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:15px;" +
+            (s.kind === i ? "background:" + L + ";color:#141210" : "background:rgba(245,242,236,.1);color:rgba(245,242,236,.72)")
+        })),
+      uploads: [
+        ["XLSX", "Base_ventas_tienda.xlsx", 100, "listo", L],
+        ["PDF", "Taller09_instrucciones.pdf", 100, "listo", L],
+        ["MP4", "Explicacion_tabla_dinamica.mp4", 62, "62%", A]
+      ].map(([ext, name, pct, status, c]) => ({
+        ext, name, status,
+        badge: "flex:none;padding:5px 8px;border-radius:6px;font:700 9px/1 'Azeret Mono',monospace;background:" + c + ";color:" + (c === A ? "#fff" : "#141210"),
+        fill: "width:" + pct + "%;height:100%;background:" + c,
+        statusStyle: "flex:none;font:600 10px/1 'Azeret Mono',monospace;color:" + c
+      })),
+      pubOpts: ["Aceptar entregas tarde con penalización", "Notificar por correo al publicar", "Permitir entrega en grupo", "Publicar la rúbrica al estudiante"]
+        .map((label, i) => ({ label, go: this.toggle("pubFlags", i), track: this.sw(s.pubFlags[i]).track, knob: this.sw(s.pubFlags[i]).knob })),
+
+      goIcfes: this.go("icfes"), goCode: this.go("code"), goCurso: this.go("curso"),
+      goVideo: this.go("video"), goSql: this.go("sql"), goResults: this.go("results"),
+      setAlumno: this.go("home"), setDocente: this.go("teacher"),
+      tabAlumno: this.pill(TEACHER.indexOf(s.screen) < 0), tabDocente: this.pill(TEACHER.indexOf(s.screen) > -1),
+
+      courses: [
+        ["TEC", "Tecnología e Informática 10°", "Módulo 4 · 12 clases", 78, L],
+        ["FSJ", "Fullstack en JavaScript", "React.js · Módulo 3", 62, A],
+        ["XLS", "Excel intermedio", "Tablas dinámicas", 91, L],
+        ["BDD", "Bases de datos — MySQL", "JOIN y agregaciones", 44, A],
+        ["EMP", "Emprendimiento", "Modelo de negocio", 30, R]
+      ].map(([tag, name, meta, pct, c]) => ({
+        tag, name, meta, pct,
+        chip: "flex:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font:700 9.5px/1 'Azeret Mono',monospace;color:#141210;background:" + c,
+        fill: "width:" + pct + "%;height:100%;background:" + c
+      })),
+
+      modules: [
+        ["01", "Fundamentos: HTML5 y CSS3", "8 clases · completo", [["VID", "Semántica y accesibilidad", "14:20", 1], ["LAB", "Maquetar una landing", "45 min", 1], ["QUIZ", "Selectores y cascada", "10 preg.", 1]]],
+        ["02", "JavaScript moderno", "11 clases · en curso", [["VID", "Arrays: map, filter, reduce", "21:40", 1], ["LAB", "Consumir una API con fetch", "60 min", 0], ["QUIZ", "Asincronía y promesas", "12 preg.", 0]]],
+        ["03", "Frontend: React, Next y Angular", "14 clases", [["VID", "Componentes y props", "18:05", 0], ["LAB", "Lista con .map()", "50 min", 0], ["VID", "Routing en Next.js", "16:30", 0]]],
+        ["04", "Backend y datos: Node, Nest, Postgres", "12 clases", [["VID", "Express y middlewares", "22:10", 0], ["LAB", "CRUD con Supabase", "75 min", 0]]]
+      ].map(([n, title, meta, items], i) => ({
+        n, title, meta, open: s.open === i, go: () => this.setState({ open: s.open === i ? -1 : i }),
+        caret: "font-size:11px;color:rgba(245,242,236,.66);transition:transform .18s;transform:rotate(" + (s.open === i ? 0 : -90) + "deg)",
+        items: items.map(([kind, name, dur, done]) => ({
+          kind, name, dur, go: this.go(kind === "LAB" ? "code" : "video"),
+          kindStyle: "flex:none;padding:4px 7px;border-radius:5px;font:700 8.5px/1 'Azeret Mono',monospace;" +
+            (kind === "VID" ? "background:" + A + ";color:#fff" : kind === "LAB" ? "background:" + L + ";color:#141210" : "background:rgba(245,242,236,.14);color:rgba(245,242,236,.7)"),
+          dot: "flex:none;width:7px;height:7px;border-radius:50%;background:" + (done ? L : "rgba(245,242,236,.18)")
+        }))
+      })),
+
+      note: s.note,
+      onNote: e => this.setState({ note: e.target.value }),
+      noteCount: s.notes + " apuntes",
+      notes: [
+        { t: "04:32", text: "La clave primaria no puede repetirse ni quedar vacía. Es el identificador único de la fila." },
+        { t: "11:58", text: "ON DELETE CASCADE borra los hijos automáticamente — ojo, no hay vuelta atrás sin respaldo." }
+      ],
+
+      clock: mm + ":" + ss,
+      clockColor: s.sec < 300 ? R : "#F5F2EC",
+      qNum: s.q + 1, qComp: q.comp, qStem: q.stem,
+      qOptions: q.opts.map((text, i) => {
+        const chosen = sel === i, right = train && chosen && i === q.ok, wrong = train && chosen && i !== q.ok;
+        const border = right ? L : wrong ? R : chosen ? A : "rgba(245,242,236,.11)";
+        const bg = right ? "rgba(198,255,61,.12)" : wrong ? "rgba(255,107,74,.12)" : chosen ? "rgba(124,92,255,.14)" : "rgba(245,242,236,.03)";
+        return {
+          k: "ABCD"[i], text, mark: right ? "✓" : wrong ? "✕" : "",
+          go: () => this.setState(st => ({ picked: { ...st.picked, [st.q]: i } })),
+          style: "display:flex;gap:13px;align-items:flex-start;padding:14px;border-radius:12px;cursor:pointer;border:1px solid " + border + ";background:" + bg + ";color:" + (right ? L : wrong ? R : "#F5F2EC"),
+          key: "flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font:700 11px/1 'Azeret Mono',monospace;background:" + (chosen ? "rgba(20,18,16,.4)" : "rgba(245,242,236,.08)")
+        };
+      }),
+      showFeedback: train && sel !== undefined,
+      feedback: q.fb,
+      toggleTrain: () => this.setState({ train: !train }),
+      trainBtn: "padding:10px 15px;border-radius:10px;cursor:pointer;font:600 11.5px/1 Archivo,sans-serif;border:1px solid " +
+        (train ? L + ";background:rgba(198,255,61,.14);color:" + L : "rgba(245,242,236,.16);color:rgba(245,242,236,.6)"),
+      prevQ: () => this.setState(st => ({ q: Math.max(0, st.q - 1) })),
+      nextQ: () => this.setState(st => ({ q: (st.q + 1) % QS.length })),
+      grid: Array.from({ length: 50 }, (_, i) => {
+        const cur = i === s.q, done = i < 12 || s.picked[i] !== undefined;
+        return {
+          n: i + 1, go: () => this.setState({ q: i % QS.length }),
+          style: "aspect-ratio:1;display:grid;place-items:center;border-radius:6px;cursor:pointer;font:600 10px/1 'Azeret Mono',monospace;" +
+            (cur ? "background:" + A + ";color:#fff" : done ? "background:rgba(198,255,61,.6);color:#141210" : "background:rgba(245,242,236,.12);color:rgba(245,242,236,.7)")
+        };
+      }),
+
+      comps: [
+        ["Lectura crítica", "68 / 100 · nivel 3", 68, L],
+        ["Matemáticas", "54 / 100 · nivel 2", 54, A],
+        ["Sociales y ciudadanas", "72 / 100 · nivel 3", 72, L],
+        ["Ciencias naturales", "61 / 100 · nivel 3", 61, A],
+        ["Inglés", "63 / 100 · B1", 63, A]
+      ].map(([name, label, v, c]) => ({ name, label, fill: "position:absolute;left:0;top:0;bottom:0;width:" + v + "%;border-radius:5px;background:" + c })),
+      bars: [12, 22, 34, 48, 62, 78, 96, 84, 66, 100, 41, 25].map((h, i) => ({
+        style: "flex:1;height:" + h + "%;border-radius:4px 4px 0 0;background:" + (i === 9 ? L : "rgba(124,92,255,.45)")
+      })),
+
+      runCode: () => this.setState({ ran: true }),
+      codeOut: s.ran
+        ? React.createElement("div", null,
+            React.createElement("div", { style: { color: "rgba(245,242,236,.5)" } }, "$ npm test lista.test.js"),
+            React.createElement("div", { style: { color: L } }, "✓ renderiza un <li> por estudiante  (12 ms)"),
+            React.createElement("div", { style: { color: L } }, "✓ usa key estable en cada ítem  (4 ms)"),
+            React.createElement("div", { style: { color: L } }, "✓ no rompe con arreglo vacío  (3 ms)"),
+            React.createElement("div", { style: { marginTop: 8, color: "#141210", background: L, display: "inline-block", padding: "3px 9px", borderRadius: 5, fontWeight: 700 } }, "3/3 pruebas · 20 pts obtenidos"))
+        : React.createElement("div", { style: { color: "rgba(245,242,236,.42)" } }, "› Listo. Pulsa Ejecutar pruebas para validar tu solución."),
+
+      sheet: [
+        ["2", "P-1042", "Teclado mecánico", "3", 129000, "PRODUCTO", 1],
+        ["3", "P-2011", "Mouse inalámbrico", "7", 48000, "PRODUCTO", 0],
+        ["4", "P-3300", "Monitor 24\"", "2", 620000, "PRODUCTO", 0],
+        ["5", "P-1042", "Teclado mecánico", "5", 129000, "PRODUCTO", 0],
+        ["6", "P-4501", "Diadema USB", "9", 75000, "#N/A", 2],
+        ["7", "P-2011", "Mouse inalámbrico", "4", 48000, "PRODUCTO", 0],
+        ["8", "P-3300", "Monitor 24\"", "1", 620000, "PRODUCTO", 0]
+      ].map(([n, a, b, c, e, d, mark]) => ({
+        n, a, b, c, e: "$" + e.toLocaleString("es-CO"), d,
+        dStyle: "border:1px solid " + (mark === 2 ? "#C4342B" : "#1D6F42") + ";padding:6px 9px;background:" +
+          (mark === 2 ? "#F8D7D3;color:#8E2118;font-weight:700" : mark === 1 ? "#CFE8D8;color:#12472A;font-weight:700" : "#E7F3EC;color:#12472A")
+      })),
+      steps: [
+        ["Abrir la hoja Ventas y revisar los encabezados", 1],
+        ["Nombrar el rango de Productos como tabla", 1],
+        ["Escribir =BUSCARV en D2 con coincidencia exacta", 2],
+        ["Arrastrar la fórmula hasta D40", 0],
+        ["Envolver en SI.ERROR para los códigos faltantes", 0],
+        ["Insertar tabla dinámica por producto y mes", 0]
+      ].map(([label, st], i) => ({
+        label, mark: st === 1 ? "✓" : st === 2 ? "▸" : i + 1,
+        row: "display:flex;gap:11px;align-items:flex-start;padding:11px;border-radius:10px;" +
+          (st === 2 ? "background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.35)" : ""),
+        badge: "flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;font:700 10px/1 'Azeret Mono',monospace;" +
+          (st === 1 ? "background:" + L + ";color:#141210" : st === 2 ? "background:" + A + ";color:#fff" : "background:rgba(245,242,236,.1);color:rgba(245,242,236,.7)"),
+        text: "flex:1;min-width:0;font:500 12.5px/1.45 Archivo,sans-serif;color:" + (st === 0 ? "rgba(245,242,236,.5)" : "#F5F2EC")
+      })),
+      checkExcel: () => this.setState({ ran: !s.ran }),
+      excelMsg: s.ran
+        ? "38 de 39 celdas correctas. La fila 6 devuelve #N/A porque el código P-4501 no existe en Productos: envuélvelo en SI.ERROR."
+        : "Detectamos la fórmula en D2 con coincidencia exacta. Falta arrastrarla hasta D40. Pulsa Verificar paso cuando termines.",
+
+      setWord: () => this.setState({ office: "word" }),
+      setPpt: () => this.setState({ office: "ppt" }),
+      isWord: s.office === "word", isPpt: s.office === "ppt",
+      tabWord: this.pill(s.office === "word"), tabPpt: this.pill(s.office === "ppt"),
+
+      runSql: () => this.setState({ sqlRan: true }),
+      sqlMeta: s.sqlRan ? "5 filas · 0.014 s · consulta correcta ✓" : "sin ejecutar",
+      sqlRows: [["Kevin Rentería", "10°B", "4.6"], ["Sara Mena", "10°B", "4.3"], ["Luisa Córdoba", "10°A", "4.1"], ["Andrés Mena", "10°B", "3.9"], ["Yeimy Palacios", "10°A", "3.7"]]
+        .map(([nombre, grado, prom]) => ({ nombre, grado, prom })),
+
+      roster: [
+        ["Sara Mena", [3, 3, 3, 2, 2, 3], "4.3", L],
+        ["Kevin Rentería", [3, 3, 3, 3, 2, 3], "4.6", L],
+        ["Luisa Córdoba", [3, 3, 2, 2, 1, 3], "4.1", L],
+        ["Andrés Mena", [3, 2, 2, 1, 1, 2], "3.9", "#F5F2EC"],
+        ["Yeimy Palacios", [3, 3, 2, 1, 0, 2], "3.7", "#F5F2EC"],
+        ["Juan D. Cuesta", [2, 1, 1, 0, 0, 1], "2.4", R],
+        ["Brayan Moreno", [2, 2, 1, 1, 0, 1], "2.9", R]
+      ].map(([name, cells, avg, color]) => ({
+        name, avg, color,
+        cells: cells.map(v => ({
+          style: "flex:1;min-width:16px;height:20px;border-radius:4px;background:" +
+            (v === 3 ? L : v === 2 ? A : v === 1 ? "rgba(255,107,74,.7)" : "rgba(245,242,236,.12)")
+        }))
+      })),
+
+      chips: chipLabels.map((label, i) => ({
+        label, go: () => this.setState({ chip: i }),
+        style: "padding:8px 14px;border-radius:20px;cursor:pointer;font:600 11.5px/1 Archivo,sans-serif;border:1px solid " +
+          (s.chip === i ? L + ";background:rgba(198,255,61,.14);color:" + L : "rgba(245,242,236,.13);color:rgba(245,242,236,.6)")
+      })),
+      resources: RES.map(([kind, c, title, desc, course, size]) => ({
+        kind, title, desc, course, size,
+        badge: "padding:5px 8px;border-radius:6px;font:700 9px/1 'Azeret Mono',monospace;color:" +
+          (c === A || c === "#5B8DEF" ? "#fff" : "#141210") + ";background:" + c
+      })),
+
+      badges: BADGES.filter(() => gam).map(([glyph, name, got]) => ({
+        glyph, name,
+        card: "padding:14px 10px;border-radius:13px;display:flex;flex-direction:column;align-items:center;" +
+          (got ? "background:rgba(198,255,61,.09);border:1px solid rgba(198,255,61,.3)" : "background:rgba(245,242,236,.03);border:1px dashed rgba(245,242,236,.14);opacity:.55"),
+        icon: "width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:17px;" +
+          (got ? "background:" + L + ";color:#141210" : "background:rgba(245,242,236,.1);color:rgba(245,242,236,.66)")
+      }))
+    };
+  }
+
+  pill(active) {
+    return "padding:7px 13px;border-radius:7px;cursor:pointer;font:600 11.5px/1 Archivo,sans-serif;" +
+      (active ? "background:#7C5CFF;color:#fff" : "color:rgba(245,242,236,.55)");
+  }
+}
+</script>
+</body>
+</html>

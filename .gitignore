@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# Env files — never commit real secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Supabase local dev
+supabase/.branches
+supabase/.temp
+
+# TypeScript build info
+*.tsbuildinfo
