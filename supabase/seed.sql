@@ -83,3 +83,12 @@ insert into clases (id, modulo_id, orden, tipo, titulo, descripcion, duracion_se
   ('00000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000006', 1, 'video',
    'Tu primer componente', 'Cómo crear y renderizar un componente funcional.', 540, true)
 on conflict (modulo_id, orden) do nothing;
+
+-- --- ponderaciones del curso (para que recalcular_definitiva() produzca
+--     una nota definitiva real en cuanto exista al menos una calificación) ---
+insert into ponderaciones (curso_id, periodo_id, categoria, peso) values
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', 'talleres', 40),
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', 'labs', 30),
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', 'simulacros', 20),
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', 'actitudinal', 10)
+on conflict (curso_id, periodo_id, categoria) do nothing;

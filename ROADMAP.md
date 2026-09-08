@@ -97,8 +97,20 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   never let a *student* read their own docente's — PostgREST silently
   returned `perfiles: null` in the embed instead of an error, so the
   teacher's name just disappeared until a `perfil_docente_visible` policy
-  was added. `recursos`/`asignaciones`/`progreso_clase` writes (marking a
-  clase watched) are still not built — this phase's next slice.
+  was added.
+- [x] **Marcar clase como completada**: `/cursos/[id]/clases/[claseId]`
+  (video embed slot, descripción, prev/next dentro del curso) con un botón
+  cliente `MarcarCompletadaButton`. Pasa por un nuevo módulo Nest
+  `progreso` (`PUT /clases/:id/progreso`) en vez de una escritura directa a
+  Supabase, aunque la política RLS de `progreso_clase` es lo bastante
+  permisiva para permitirlo — según ADR-0008, RLS sola no puede verificar
+  que el estudiante esté realmente matriculado en el curso dueño de ese
+  `clase_id`, así que esa validación vive en
+  `ProgresoService.assertInscrito`. Verificado en navegador: marcar una
+  clase actualiza tanto el botón de esa página como la barra de progreso
+  de `/cursos` (0/3 → 1/3) tras una recarga real. `recursos`/`asignaciones`
+  (recursos de archivo, tareas del docente) siguen sin construirse — el
+  siguiente corte de esta fase.
 - [x] **ICFES exam-taking vertical slice** (pulled forward from Phase 2 to
   prove the Nest domain-module pattern end to end): `apps/api/src/examenes`
   (`ExamenesService`/`Controller`) owns attempt creation/resume, idempotent
@@ -121,13 +133,35 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   offline answer buffering (mandatory per the decision below, not yet
   built), `intento.expirar` background job, and the results/histogram view
   for teachers.
-- [ ] Actividades, recursos, apuntes (writing progreso_clase on watch,
-  file resources, teacher-authored asignaciones).
-- [ ] Asignaciones + entregas (file submission via `POST /storage/url-subida` +
-  `POST /asignaciones/:id/entregas`), teacher review/feedback.
-- [ ] Gradebook: `ponderaciones`, `calificaciones`, `notas_definitivas` (trigger-
-  recalculated per the schema), planilla UI with sticky first column.
-- [ ] Teacher panel v0 (KPIs, submissions to grade).
+- [x] **Asignaciones + entregas + calificación** (text-comment submissions
+  only — file upload is the one part of this bullet still open, see below):
+  new `apps/api/src/asignaciones` module owns every domain write per
+  ADR-0008 (create, publish-on-create, submit, grade), while listing an
+  already-published asignación and a student's own entrega/calificación
+  stay direct-Supabase reads against the existing `entregas_propias`/
+  `calificacion_visible` policies plus a new `asignaciones_visibles` policy
+  (migration 000011). `AsignacionesService.crear` resolves the current
+  `periodo_id` server-side from the curso's `anio_id` rather than asking the
+  teacher to pick one. `/panel/actividades` (create form + list) and
+  `/panel/actividades/[id]` (grading view, one input per entrega) on the
+  docente side; `/actividades` (list with per-student estado badge) and
+  `/actividades/[id]` (instructions + submit form, or the grade once
+  published) on the estudiante side. Verified end to end with real
+  Wilmer/Sara accounts: created a taller via the actual UI form, graded
+  Sara's submission (4.5/5.0), and confirmed — via the *exact* RLS-scoped
+  query the student pages run — that Sara can read both her
+  `calificaciones` row and the resulting `notas_definitivas` row. That
+  second row is the schema's `trg_calificacion_definitiva` trigger firing
+  automatically on the `calificaciones` insert — Nest never computes the
+  weighted average itself, it only writes the raw grade (see the new
+  `ponderaciones` seed rows added so the trigger has weights to work with).
+  Still open: `entrega_archivos` file upload (needs a signed-upload-URL
+  Nest endpoint per ADR-0008, not yet built), and a full teacher planilla
+  grid (today's grading view is per-assignment, not all-students ×
+  all-assignments).
+- [ ] Recursos, apuntes (file resources attached to a clase/curso).
+- [ ] Teacher panel v0 (KPIs, submissions to grade) beyond the per-assignment
+  grading view above.
 - [ ] CI: lint, typecheck, unit tests on every PR (no git host/remote yet to
   attach CI to — see [TD-007](TECHNICAL_DEBT.md)).
 

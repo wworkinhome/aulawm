@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth/current-user";
@@ -91,9 +92,10 @@ export default async function CursoDetallePage({
                     const badge = TIPO_BADGE[clase.tipo] ?? TIPO_BADGE.quiz;
                     const hecha = completadas.has(clase.id);
                     return (
-                      <div
+                      <Link
                         key={clase.id}
-                        className="flex items-center gap-3 px-4 py-3"
+                        href={`/cursos/${curso.id}/clases/${clase.id}`}
+                        className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[.04]"
                       >
                         <span
                           className={`rounded-[6px] px-1.5 py-0.5 font-mono text-[9px] font-bold ${badge.className}`}
@@ -113,7 +115,7 @@ export default async function CursoDetallePage({
                             hecha ? "bg-lime" : "bg-white/20"
                           }`}
                         />
-                      </div>
+                      </Link>
                     );
                   })}
               </div>
