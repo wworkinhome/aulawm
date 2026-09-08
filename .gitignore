@@ -36,3 +36,6 @@ supabase/.temp
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Claude Code harness session state
+.claude/scheduled_tasks.lock

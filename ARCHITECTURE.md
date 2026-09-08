@@ -55,10 +55,35 @@ the feature).
 
 ## Live deployment (as of 2026-09-08)
 
-- **Frontend**: Vercel, project `wworkinhomes-projects/web`, connected to
-  `github.com/wworkinhome/aulawm` (git-based deploys, Root Directory
-  `apps/web`, monorepo files included in the build per pnpm workspace
-  detection).
+- **Frontend**: Vercel, project `wworkinhomes-projects/aulawm-web`, imported
+  from `github.com/wworkinhome/aulawm` via Vercel's "New Project" Git-import
+  flow (not `vercel link` — see the note below), Root Directory `apps/web`.
+  Live at `https://aulawm-web.vercel.app`, verified rendering correctly
+  (design tokens, self-hosted fonts, no console errors).
+
+  **Root cause of an early deploy failure, for the record**: an initial
+  attempt (project name `web`, created via `vercel link` run from inside
+  `apps/web`) failed every build with "No Next.js version detected" even
+  though its dashboard settings *displayed* `Root Directory: apps/web` and
+  `Framework Preset: Next.js`. Recreating the project via Vercel's Git-import
+  wizard surfaced the real problem: Vercel's own repo-import auto-detection
+  had classified this repository's framework as **NestJS** (because
+  `apps/api` also exists in the monorepo), and prefilled `project-name:
+  aulawm-api` / `Root Directory: apps/api` in the very query string of the
+  import URL. The `vercel link`-created project had inherited that same
+  wrong auto-detected framework/root-directory pairing at creation time; the
+  dashboard's later display of "apps/web" / "Next.js" was a live client-side
+  re-check that never actually overwrote the stored, incorrect build-time
+  config. Fix: delete that project and re-import through the Git-import
+  wizard, explicitly reselecting `apps/web` as the root directory *during
+  creation* (the wizard's directory picker correctly re-detects Next.js once
+  `apps/web` is chosen) — editing Root Directory after the fact in a
+  ready-made project's settings did not reliably fix it. Environment
+  variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
+  `NEXT_PUBLIC_API_URL`) also needed re-entering by hand, since Vercel's
+  "detected env vars" step pulls `.env.example` files from *both*
+  `apps/api` and `apps/web` indiscriminately and doesn't scope them to the
+  chosen root directory.
 - **Backend**: **Render**, not Railway — see
   [ADR-0013](docs/adr/0013-render-over-railway.md). Service `aulawm-api`,
   free plan, region Oregon, live at `https://aulawm-api.onrender.com`.
