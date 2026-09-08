@@ -35,12 +35,15 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const protectedPrefixes = ["/inicio"];
-  const isProtected = protectedPrefixes.some((p) =>
+  // Deny by default: every route requires a session except the ones
+  // explicitly listed here. Safer than an allow-list of protected prefixes,
+  // which silently stops covering new routes as they're added.
+  const publicPrefixes = ["/login"];
+  const isPublic = publicPrefixes.some((p) =>
     request.nextUrl.pathname.startsWith(p),
   );
 
-  if (!user && isProtected) {
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

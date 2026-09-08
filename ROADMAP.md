@@ -76,10 +76,23 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   rendering correctly in-browser. Component library itself (Button, Input,
   Card, Chip, Switch, Badge, Modal, Toast, Skeleton, Empty/Error states) not
   yet built.
-- [ ] App shell: top bar, left rail (16 nav items), Alumno/Docente switch — per
-  the prototype's shell spec.
+- [x] **App shell**: top bar (logo, search box, avatar with gradient
+  initials, Alumno/Docente switch — shown only when an account actually
+  holds both roles), left rail (own-scroll, numbered, active-state
+  highlight, "Periodo 3" card, sign-out), separate `(alumno)`/`(docente)`
+  route groups per [ARCHITECTURE.md's structure](ARCHITECTURE.md#5-repository-structure-monorepo-pnpm--turborepo),
+  each with its own nav list (13 estudiante items, 18 docente items — brief
+  §19–20) and its own role-gated layout. All 29 not-yet-built destinations
+  render a shared `ComingSoon` component instead of dead links or 404s.
+  Verified in-browser with both seeded accounts, including sign-out and
+  active-state highlighting while navigating.
 - [ ] Cursos, módulos, clases (video/lectura/lab/quiz), recursos, apuntes,
-  progreso_clase.
+  progreso_clase. `cursos` now has an RLS policy (docente sees their own,
+  estudiante sees courses of groups they're actively enrolled in — added
+  and verified 2026-09-08 after `/panel`'s course count read 0 without it,
+  per [TD-015](TECHNICAL_DEBT.md)'s "write it when you first need it" rule).
+  `modulos`/`clases`/`recursos` still have none — same rule applies when
+  the course detail page is built.
 - [ ] Asignaciones + entregas (file submission via `POST /storage/url-subida` +
   `POST /asignaciones/:id/entregas`), teacher review/feedback.
 - [ ] Gradebook: `ponderaciones`, `calificaciones`, `notas_definitivas` (trigger-

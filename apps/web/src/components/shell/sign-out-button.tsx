@@ -9,7 +9,7 @@ export function SignOutButton() {
   const [pending, startTransition] = useTransition();
 
   return (
-    <button
+    <div
       onClick={() =>
         startTransition(async () => {
           const supabase = createClient();
@@ -18,10 +18,10 @@ export function SignOutButton() {
           router.refresh();
         })
       }
-      disabled={pending}
-      className="rounded-[9px] border border-white/[.16] px-3.5 py-2 text-[12px] font-semibold text-ink/80 hover:border-accent disabled:opacity-60"
+      className="mt-2 flex cursor-pointer items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 font-sans text-[12px] font-semibold text-ink/65 hover:bg-white/[.07]"
     >
-      {pending ? "Saliendo…" : "Cerrar sesión"}
-    </button>
+      <span className="w-4 flex-none font-mono text-[10px]">↩</span>
+      <span>{pending ? "Saliendo…" : "Cerrar sesión"}</span>
+    </div>
   );
 }

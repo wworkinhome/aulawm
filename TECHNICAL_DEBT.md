@@ -162,17 +162,17 @@ section with the date, don't just delete it).
   plan issue is resolved and migrate, or upgrade Render to a paid plan.
 
 ### TD-015: Most tables still have RLS enabled but no policy at all
-- **Description**: Only the tables needed for the login vertical slice
-  (`perfiles`, `roles_usuario`, `matriculas`, `grupos`, plus what the
-  initial migration already covered — `apuntes`, `progreso_clase`,
-  `intentos`, etc.) have RLS policies. Everything else with `enable row
-  level security` but no policy — `cursos`, `modulos`, `clases`, `recursos`,
-  `examenes`, `resultados_competencia`, `entrega_archivos`,
-  `insignias_usuario`, `xp_eventos`, `rachas`, `consentimientos` — denies
-  all direct-Supabase access by default (safe failure mode, per
-  [ADR-0008](docs/adr/0008-hybrid-data-access.md)'s "decide deliberately per
-  table" rule), which also means **no one can read them directly yet, not
-  even their owner**.
+- **Description**: Only the tables needed so far — the login vertical slice
+  (`perfiles`, `roles_usuario`, `matriculas`, `grupos`), what the initial
+  migration already covered (`apuntes`, `progreso_clase`, `intentos`, etc.),
+  and `cursos` (added 2026-09-08 building `/panel`) — have RLS policies.
+  Everything else with `enable row level security` but no policy —
+  `modulos`, `clases`, `recursos`, `examenes`, `resultados_competencia`,
+  `entrega_archivos`, `insignias_usuario`, `xp_eventos`, `rachas`,
+  `consentimientos` — denies all direct-Supabase access by default (safe
+  failure mode, per [ADR-0008](docs/adr/0008-hybrid-data-access.md)'s
+  "decide deliberately per table" rule), which also means **no one can read
+  them directly yet, not even their owner**.
 - **Impact**: Building any Phase 1/2 feature against these tables (course
   listing, module/lesson content, etc.) will hit the same "permission
   denied" surprise found today with `perfiles`/`matriculas` until each
