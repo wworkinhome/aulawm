@@ -129,3 +129,34 @@ section with the date, don't just delete it).
   grades. No sync to an external academic system, no export-format
   requirement for MVP. Revisit only if an institutional system is introduced
   later. See [ARCHITECTURE.md §12.2](ARCHITECTURE.md#12-decisions-on-the-handoffs-blocking-questions).
+
+## Open (continued)
+
+### TD-013: `github.com/wworkinhome/aulawm` is public, not private
+- **Description**: Made public on 2026-09-08 to unblock Render's deploy —
+  Render's account-level GitHub connection could not fetch the repo while
+  private (`POST /v1/services` returned "invalid or unfetchable" despite the
+  Render GitHub App showing "All repositories" access on GitHub's side). See
+  [ADR-0013](docs/adr/0013-render-over-railway.md) for the full investigation.
+- **Impact**: Source code (not secrets — no credentials are committed) is
+  publicly readable. For a product that will hold student data, this should
+  not be the permanent state.
+- **Risk**: Low today (no student data in the repo, no secrets), but grows
+  as real content/business logic accumulates.
+- **Priority**: Revisit before Phase 1 sign-off — either fix Render's
+  GitHub App connection properly (may require uninstalling and reinstalling
+  the App, or contacting Render support) and revert to private, or move the
+  API deploy to a platform whose account is cleanly linked to this GitHub
+  account from the start.
+
+### TD-014: Render free plan cold-starts; Railway plan issue unresolved
+- **Description**: `aulawm-api` runs on Render's free tier, which spins down
+  after inactivity (cold start on next request). Railway was the originally
+  planned platform but its free-tier project-provision limit blocked
+  creation, and the limit persisted even after the user upgraded their plan
+  (likely a propagation delay, not confirmed resolved).
+- **Impact**: Noticeable latency on the first request after idle periods;
+  not acceptable once real users depend on this.
+- **Risk**: Low now (development/testing only), real before any live usage.
+- **Priority**: Revisit before Phase 1 sign-off — either confirm Railway's
+  plan issue is resolved and migrate, or upgrade Render to a paid plan.

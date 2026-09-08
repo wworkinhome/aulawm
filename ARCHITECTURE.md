@@ -49,10 +49,32 @@ is needed). Supabase's newer **publishable/secret** key naming was used
 naming — functionally equivalent, referenced as `SUPABASE_SECRET_KEY` /
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in this codebase's env files.
 
-Not yet done: applying this to a staging/production deploy target (Vercel/
-Railway — [ADR-0004](docs/adr/0004-supabase-infrastructure.md)), and building
-the actual `/auth/registro` approval-flow business logic (the project/hook
-being live is the infrastructure prerequisite, not the feature).
+Not yet done: building the actual `/auth/registro` approval-flow business
+logic (the project/hook being live is the infrastructure prerequisite, not
+the feature).
+
+## Live deployment (as of 2026-09-08)
+
+- **Frontend**: Vercel, project `wworkinhomes-projects/web`, connected to
+  `github.com/wworkinhome/aulawm` (git-based deploys, Root Directory
+  `apps/web`, monorepo files included in the build per pnpm workspace
+  detection).
+- **Backend**: **Render**, not Railway — see
+  [ADR-0013](docs/adr/0013-render-over-railway.md). Service `aulawm-api`,
+  free plan, region Oregon, live at `https://aulawm-api.onrender.com`.
+  Deployed from the same GitHub repo, `rootDir: apps/api`, build command
+  `cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @aulawm/shared
+  build && pnpm --filter @aulawm/db build && pnpm --filter api build`, start
+  command `node dist/main.js`. Verified live: public route 200, `/me` without
+  a token 401.
+- **Repository visibility**: `github.com/wworkinhome/aulawm` is currently
+  **public** — made public specifically to unblock Render (see ADR-0013); a
+  private repo is the intended long-term state once Render's GitHub
+  connection issue is understood or another deploy path is chosen. Tracked
+  as [TD-013](TECHNICAL_DEBT.md).
+- Free-tier caveat: Render's free web service plan spins down on inactivity
+  (cold start on the next request) — acceptable for now, revisit before this
+  is anyone's production entry point.
 
 ## 0. Status of this document
 
