@@ -1,5 +1,59 @@
 # AulaWM — Architecture
 
+## Live infrastructure (as of 2026-09-07)
+
+A real Supabase project exists: **`aulawm`**, org **WM Docente**, region
+`us-east-1` (East US, North Virginia), project ref `ovcoruwnosxkiuorwubv`.
+Provisioned with "Automatically expose new tables" **disabled** at creation,
+matching the per-table-deliberate-RLS posture in
+[ADR-0008](docs/adr/0008-hybrid-data-access.md) — a new table is never
+Data-API-readable by accident.
+
+Applied so far (`supabase/migrations/`, run directly against the project's
+Postgres connection — see [ADR-0012](docs/adr/0012-raw-sql-migrations.md)):
+
+1. `20260101000000_initial_schema.sql` — all 41 tables, RLS, triggers, seed data.
+2. `20260101000001_custom_access_token_hook.sql` — the JWT claims hook.
+3. `20260101000002_storage_buckets.sql` — `material`/`entregas`/`avatares`,
+   all private.
+4. `20260101000003_fix_custom_access_token_hook.sql` — see below.
+
+The **Customize Access Token (JWT) Claims** hook is registered (Authentication
+→ Hooks) against `public.custom_access_token_hook`. Verified end to end
+against the real project with a throwaway admin-created test user: login
+issued an ES256-signed JWT with `app_metadata.roles: ["docente"]` and
+`app_metadata.grupos: []` populated correctly; `apps/api`'s `JwtSupabaseGuard`
+(JWKS-based — see [ADR-0009](docs/adr/0009-supabase-auth.md)) accepted it,
+and `RolesGuard` correctly authorized the `docente`-only test route. The test
+user and its rows were deleted afterward (cascade-deleted cleanly, confirming
+the FK chain `auth.users → perfiles → roles_usuario` behaves as designed).
+
+**Two real bugs found and fixed during this verification** (both now folded
+into the migration history, not just fixed live):
+- The hook originally ran as `supabase_auth_admin`, a non-superuser role that
+  RLS blocks by default from reading `roles_usuario`/`curso_grupos`/etc. —
+  login failed with a 500 until the function was marked `security definer`.
+- `jsonb_set(claims, '{app_metadata,roles}', ..., true)` silently no-ops when
+  `app_metadata` doesn't already exist in `claims` — `create_missing` only
+  creates the *last* path segment, not intermediate ones. Fixed by ensuring
+  `app_metadata` exists as an object first.
+
+Credentials live in `apps/api/.env` and `apps/web/.env.local` (gitignored,
+never committed — see the matching `.env.example` files for the variable
+names). **This project also confirmed a real deviation from ADR-0009's
+original assumption**: new Supabase projects default to asymmetric **JWT
+Signing Keys** (ECC P-256), not a legacy shared HS256 secret — the guard was
+rewritten to verify via JWKS accordingly (no `SUPABASE_JWT_SECRET` exists or
+is needed). Supabase's newer **publishable/secret** key naming was used
+(`sb_publishable_...` / `sb_secret_...`), not the legacy `anon`/`service_role`
+naming — functionally equivalent, referenced as `SUPABASE_SECRET_KEY` /
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in this codebase's env files.
+
+Not yet done: applying this to a staging/production deploy target (Vercel/
+Railway — [ADR-0004](docs/adr/0004-supabase-infrastructure.md)), and building
+the actual `/auth/registro` approval-flow business logic (the project/hook
+being live is the infrastructure prerequisite, not the feature).
+
 ## 0. Status of this document
 
 **Revised.** Phase 0 discovery found a design handoff package at

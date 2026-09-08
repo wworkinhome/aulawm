@@ -23,12 +23,23 @@ do" between two separately-built auth systems.
   not a rebuild) issues and verifies credentials, handles password reset
   (`resetPasswordForEmail`, 30-minute link, matching the prototype's copy), and
   issues the JWT.
-- A **custom access token hook** adds `app_metadata.roles` (`estudiante` |
-  `docente` | `coordinacion`) and the user's group associations to the JWT.
-- NestJS verifies the JWT signature (`JwtSupabaseGuard`, `SUPABASE_JWT_SECRET`
-  for HS256, or JWKS if the project later moves to asymmetric signing) and
-  builds `req.user = { sub, roles, grupos }` from its claims — it does not
-  re-derive roles from a separate Nest-owned table on every request.
+- A **custom access token hook** (`public.custom_access_token_hook`, see
+  `supabase/migrations/20260101000001_custom_access_token_hook.sql`, registered
+  under Authentication > Hooks in the dashboard) adds `app_metadata.roles`
+  (`estudiante` | `docente` | `coordinacion`) and the user's group associations
+  to the JWT.
+- NestJS verifies the JWT signature (`JwtSupabaseGuard`) against the project's
+  **JWKS** (`${SUPABASE_URL}/auth/v1/.well-known/jwks.json`, via `jose`'s
+  `createRemoteJWKSet`) and builds `req.user = { sub, roles, grupos }` from its
+  claims — it does not re-derive roles from a separate Nest-owned table on
+  every request. **Confirmed against the real `aulawm` project (created
+  2026-09-07): new Supabase projects default to asymmetric "JWT Signing Keys"
+  (ECC P-256), not the legacy shared HS256 secret** — the dashboard's own
+  "Legacy JWT Secret" tab says outright "Legacy JWT secret has been migrated to
+  new JWT Signing Keys" and steers toward the new key model. JWKS verification
+  needs no shared secret on the API side at all, which is strictly better for
+  this ADR's own goals (fewer secrets to protect) than the HS256 path
+  originally assumed here.
 - Postgres RLS policies read the same roles via the `auth_roles()` /
   `es_docente()` SQL functions defined in `sql/schema.sql`, operating on
   `auth.jwt()` — again, the same claims, no duplication.

@@ -7,7 +7,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { RequestUserSchema, type RequestUser } from "@aulawm/shared";
-import { jwtVerify } from "jose";
+import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from "jose";
 import type { Request } from "express";
 
 import { IS_PUBLIC_KEY } from "./public.decorator.js";
@@ -22,22 +22,41 @@ declare module "express" {
  * Verifies the Supabase-issued JWT on every request (unless the route is
  * marked @Public()) and populates req.user = { sub, roles, grupos }.
  *
- * Per docs/adr/0009-supabase-auth.md, roles and taught/enrolled groups are
- * embedded in the token by a Supabase custom access token hook under
- * `app_metadata`, mirroring the `auth_roles()` SQL function in
- * supabase/migrations/20260101000000_initial_schema.sql (which reads
- * `auth.jwt() -> 'app_metadata' -> 'roles'`). The exact claim path below
- * (`app_metadata.roles` / `app_metadata.grupos`) must be confirmed against
- * the real hook once it's implemented against a live Supabase project — if
- * the hook places `grupos` elsewhere, update the payload mapping here, not
- * the RequestUser shape consumers depend on.
+ * Verification is JWKS-based (asymmetric ECC/P-256), not a shared HS256
+ * secret: new Supabase projects default to "JWT Signing Keys" rather than
+ * the legacy shared JWT secret (confirmed against the real `aulawm` project
+ * — Settings > JWT Keys shows an ECC (P-256) signing key, and the legacy
+ * secret tab is explicitly deprecated: "Legacy JWT secret has been migrated
+ * to new JWT Signing Keys"). `jose`'s `createRemoteJWKSet` fetches and caches
+ * the public JWKS from `${SUPABASE_URL}/auth/v1/.well-known/jwks.json` — no
+ * shared secret needs to be stored or protected on the API side at all.
+ * See docs/adr/0009-supabase-auth.md.
+ *
+ * Roles and taught/enrolled groups are embedded in the token by the
+ * `custom_access_token_hook` Postgres function (see
+ * supabase/migrations/20260101000001_custom_access_token_hook.sql, and its
+ * registration under Authentication > Hooks in the dashboard) under
+ * `app_metadata.roles` / `app_metadata.grupos` — mirroring the `auth_roles()`
+ * SQL function used by RLS policies, so both read the same claims.
  */
 @Injectable()
 export class JwtSupabaseGuard implements CanActivate {
+  private jwks: JWTVerifyGetKey | null = null;
+
   constructor(
     private readonly reflector: Reflector,
     private readonly config: ConfigService,
   ) {}
+
+  private getJwks(): JWTVerifyGetKey {
+    if (!this.jwks) {
+      const supabaseUrl = this.config.getOrThrow<string>("SUPABASE_URL");
+      this.jwks = createRemoteJWKSet(
+        new URL("/auth/v1/.well-known/jwks.json", supabaseUrl),
+      );
+    }
+    return this.jwks;
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -52,10 +71,9 @@ export class JwtSupabaseGuard implements CanActivate {
       throw new UnauthorizedException("Missing bearer token");
     }
 
-    const secret = this.config.getOrThrow<string>("SUPABASE_JWT_SECRET");
     let payload: Record<string, unknown>;
     try {
-      const result = await jwtVerify(token, new TextEncoder().encode(secret));
+      const result = await jwtVerify(token, this.getJwks());
       payload = result.payload;
     } catch {
       throw new UnauthorizedException("Invalid or expired token");

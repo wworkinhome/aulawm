@@ -21,7 +21,9 @@ Trust violation:
 - **Every write to domain data** (grades, exam attempts/answers, lab
   submissions and their verdicts, publishing anything, role/enrollment
   approval, ponderaciones) goes through NestJS. Nest uses the Supabase
-  **service-role key**, which bypasses RLS — meaning RLS provides *zero*
+  **service-role key** — called the **secret key** (`sb_secret_...`) under
+  Supabase's newer key naming, used on the real `aulawm` project; same
+  bypasses-RLS role, new label — which bypasses RLS — meaning RLS provides *zero*
   protection on the write path, and every authorization/business rule for
   writes must be implemented explicitly in a Nest guard or service. This is
   spelled out directly in the schema's RLS section: "las escrituras de dominio
@@ -32,9 +34,10 @@ Trust violation:
   upload URLs, sandbox dispatch, video asset creation) is a write-shaped
   concern even if it superficially looks like a read (e.g., "get my exam
   attempt" actually creates or resumes an attempt row) — it goes through Nest.
-- **The client-side Supabase key is always the anon key**, scoped by RLS. The
-  service-role key exists only in the Nest process's environment and is never
-  sent to the browser or bundled into the Next.js client build.
+- **The client-side Supabase key is always the anon key** (the **publishable
+  key**, `sb_publishable_...`, in the newer naming), scoped by RLS. The
+  service-role/secret key exists only in the Nest process's environment and
+  is never sent to the browser or bundled into the Next.js client build.
 - Tables holding data that must never leak to the wrong reader even under a
   direct query — the question bank's `clave` (answer key), a lab's
   `codigo_solucion`/`archivo_pruebas` — either have no student-readable RLS

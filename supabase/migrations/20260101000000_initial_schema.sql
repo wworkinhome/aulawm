@@ -651,18 +651,9 @@ create policy asignaciones_lectura on asignaciones
 -- ============================================================
 -- 9. STORAGE (buckets)
 -- ============================================================
--- material  : público-con-firma, sube el docente
--- entregas  : privado, sube el estudiante hasta la fecha de cierre
--- avatares  : privado con firma
---
--- insert into storage.buckets (id, name, public) values
---   ('material', 'material', false),
---   ('entregas', 'entregas', false),
---   ('avatares', 'avatares', false);
---
--- Convención de rutas:
---   material/{cursoId}/{asignacionId}/{nombre}
---   entregas/{asignacionId}/{estudianteId}/{intento}/{nombre}
+-- See 20260101000002_storage_buckets.sql — kept as a separate migration
+-- since storage.buckets is Supabase-managed state, not part of the
+-- application schema proper.
 
 -- ============================================================
 -- 10. SEMILLAS MÍNIMAS

@@ -40,20 +40,25 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   `packages/db`, `packages/shared`, `packages/tokens`, `supabase/migrations` —
   per [ARCHITECTURE.md §5](ARCHITECTURE.md#5-repository-structure-monorepo-pnpm--turborepo).
   Builds, lints, and `turbo run build` pass across all 5 workspace packages.
-- [x] Port `sql/schema.sql` (all sections) as the first migration
-  (`supabase/migrations/20260101000000_initial_schema.sql`). Not yet applied
-  to a real Supabase project — no project exists yet — and the custom access
-  token hook it depends on ([ADR-0009](docs/adr/0009-supabase-auth.md)) is
-  not yet registered anywhere; both are needed before real login works.
-- [ ] Auth: Supabase Auth email/password, registration → `matriculas.estado =
-  'pendiente'` → teacher/coordination approval flow, password reset.
-- [x] `JwtSupabaseGuard` + `RolesGuard` + `@CurrentUser()`/`@Public()`/`@Roles()`
-  decorators (`apps/api/src/auth/`) — verified end to end with signed test
-  JWTs (public route, authenticated route, role-gated route, invalid-token
-  rejection all behave correctly). Still needed: the ownership-check half of
-  the pattern (a teacher endpoint verifying the resource belongs to a group
-  they teach, not just their role) once a real resource module exists to
-  demonstrate it on.
+- [x] Real Supabase project provisioned (`aulawm`, org WM Docente,
+  us-east-1) — see [ARCHITECTURE.md "Live infrastructure"](ARCHITECTURE.md#live-infrastructure-as-of-2026-09-07).
+  `sql/schema.sql` applied as migrations 0–3 (schema, access-token hook,
+  storage buckets, a hook bug fix), hook registered in the dashboard, and
+  the whole login → JWKS-verify → role-gate pipeline confirmed end to end
+  against real infrastructure with a throwaway test user.
+- [ ] Auth: registration business logic — `POST /auth/registro` creating
+  `matriculas.estado = 'pendiente'`, the teacher/coordination approval
+  endpoint, password reset UI. The underlying Supabase Auth + hook
+  infrastructure is live and verified; this is the remaining application
+  logic on top of it.
+- [x] `JwtSupabaseGuard` (JWKS-based, not the HS256 secret ADR-0009 originally
+  assumed — see the architecture doc's live-infrastructure note) +
+  `RolesGuard` + `@CurrentUser()`/`@Public()`/`@Roles()` decorators
+  (`apps/api/src/auth/`) — verified end to end with both signed test JWTs and
+  a real Supabase-issued token from a real (since-deleted) test user. Still
+  needed: the ownership-check half of the pattern (a teacher endpoint
+  verifying the resource belongs to a group they teach, not just their role)
+  once a real resource module exists to demonstrate it on.
 - [x] Design System v0 foundation: `@aulawm/tokens` wired into
   `apps/web/src/app/globals.css` via Tailwind v4's `@theme inline`, fonts
   self-hosted via `next/font/google` (Archivo, Azeret Mono), verified
