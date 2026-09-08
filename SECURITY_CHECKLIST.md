@@ -27,6 +27,12 @@ calling the feature done — this is the security half of the project's
       [ADR-0008](docs/adr/0008-hybrid-data-access.md)). New tables get this
       for free via `alter default privileges`; only relevant if that default
       was ever changed
+- [ ] If the table (or a new domain endpoint reading it) is ever touched by
+      `apps/api`'s admin client, **also tested with a real Nest call**, not
+      just a direct-Supabase one — the `service_role` grant is separate from
+      `authenticated`/`anon` and was missed the first time a real domain
+      module (`examenes`) shipped, silently swallowed as
+      `permission denied for table X` inside a generic "not found" response
 
 ## Every endpoint
 

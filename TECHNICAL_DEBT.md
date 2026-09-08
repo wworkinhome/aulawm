@@ -165,10 +165,15 @@ section with the date, don't just delete it).
 - **Description**: Only the tables needed so far — the login vertical slice
   (`perfiles`, `roles_usuario`, `matriculas`, `grupos`), what the initial
   migration already covered (`apuntes`, `progreso_clase`, `intentos`, etc.),
-  and `cursos`/`modulos`/`clases` (added 2026-09-08 building `/panel` and
-  the course list/detail pages) — have RLS policies. Everything else with
-  `enable row level security` but no policy — `recursos`, `examenes`,
-  `resultados_competencia`, `entrega_archivos`, `insignias_usuario`,
+  `cursos`/`modulos`/`clases` (added 2026-09-08 building `/panel` and
+  the course list/detail pages), and `examenes`/`examen_asignaciones`
+  (added 2026-09-08 for the `/examenes` list page, metadata-only —
+  `preguntas`/`resultados_competencia` deliberately still have no
+  direct-Supabase policy, since those are only ever read through
+  `apps/api`'s `ExamenesService` with the service-role key, never via
+  PostgREST) — have RLS policies. Everything else with
+  `enable row level security` but no policy — `recursos`,
+  `entrega_archivos`, `insignias_usuario`,
   `xp_eventos`, `rachas`, `consentimientos` — denies all direct-Supabase
   access by default (safe failure mode, per
   [ADR-0008](docs/adr/0008-hybrid-data-access.md)'s "decide deliberately per
@@ -197,3 +202,30 @@ section with the date, don't just delete it).
   (`grant ... on all tables in schema public` + `alter default privileges`
   so future tables get it automatically). See
   [ADR-0008](docs/adr/0008-hybrid-data-access.md) for the full explanation.
+
+### TD (resolved 2026-09-08): `service_role` was missing the same base GRANT
+- **Description**: TD-015's fix (migration 000005) granted table access to
+  `authenticated`/`anon` but not `service_role` — an oversight, since
+  `apps/api`'s admin client (used for anything that must bypass RLS, per
+  ADR-0008) authenticates as `service_role`. Not caught until the first real
+  Nest domain endpoint (`GET /examenes/:id/intento`) was tested against
+  production Supabase and returned a generic "Examen no encontrado" that
+  was actually a swallowed `permission denied for table examenes`.
+- **Resolution**: `supabase/migrations/20260101000009_grant_service_role.sql`
+  applies the same grant to `service_role`. Added to
+  [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md): when granting table access,
+  grant to all three roles (`authenticated`, `anon`, `service_role`) that
+  might touch the table, not just the ones the current feature happens to use.
+
+### TD (resolved 2026-09-08): Seed UUIDs with an invalid version nibble passed Postgres but failed `@IsUUID()`
+- **Description**: `supabase/seed_icfes.sql`'s first draft used
+  human-readable fake UUIDs (`00000000-0000-0000-0000-0000000000a1`) — valid
+  as far as Postgres's `uuid` type cares, but the version nibble (must be
+  1–5) was `0`, which `class-validator`'s `@IsUUID()` correctly rejects. The
+  DTO validation error only surfaced once the real Nest endpoint was called
+  with those ids — SQL-level testing never would have caught it.
+- **Resolution**: Regenerated with proper v4-format ids
+  (`10000000-0000-4000-8000-00000000000X` — version nibble `4`, variant
+  nibble `8`). Worth remembering for any future seed data referenced by a
+  DTO with `@IsUUID()`: use real UUIDs (`gen_random_uuid()` or a proper v4
+  generator), not hand-typed placeholders, even for throwaway seed rows.

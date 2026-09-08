@@ -99,6 +99,28 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   teacher's name just disappeared until a `perfil_docente_visible` policy
   was added. `recursos`/`asignaciones`/`progreso_clase` writes (marking a
   clase watched) are still not built — this phase's next slice.
+- [x] **ICFES exam-taking vertical slice** (pulled forward from Phase 2 to
+  prove the Nest domain-module pattern end to end): `apps/api/src/examenes`
+  (`ExamenesService`/`Controller`) owns attempt creation/resume, idempotent
+  answer saving, server-computed remaining time, and finalize-with-scoring —
+  the answer key never leaves the server (`serializarIntento` strips
+  `clave`). `apps/web` has `/examenes` (RLS-scoped direct-Supabase list of
+  assigned, currently-open exams) and `/examenes/[id]` (client component:
+  timer, question navigator, answer selection, results screen with
+  per-competency level 1–4 breakdown). Verified end to end in a real browser
+  with Sara's seeded account: 6-question exam, one deliberately wrong
+  answer, correct 417/500 global score and correct per-competency levels;
+  idempotent finalize and cross-student ownership rejection (404) verified
+  earlier via curl. Two bugs found and fixed this slice: the `service_role`
+  GRANT was missing (migration 000005 covered `authenticated`/`anon` but not
+  `service_role` — first real Nest endpoint hit `permission denied for table
+  examenes` until migration 000009 added it) and `seed_icfes.sql`'s first
+  draft used non-RFC4122 UUIDs (`...-0000000000a1`) that Postgres accepts
+  but `class-validator`'s `@IsUUID()` correctly rejects. Still missing before
+  this counts as Phase 2-complete: exam builder UI (docente-authored exams),
+  offline answer buffering (mandatory per the decision below, not yet
+  built), `intento.expirar` background job, and the results/histogram view
+  for teachers.
 - [ ] Actividades, recursos, apuntes (writing progreso_clase on watch,
   file resources, teacher-authored asignaciones).
 - [ ] Asignaciones + entregas (file submission via `POST /storage/url-subida` +
@@ -117,10 +139,13 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   flags, show-key-at-end, timer visibility, retake) → question editor (click
   an option to mark it the key) → structure grid (50-question layout) →
   publish to groups with open/close dates.
-- Exam-taking client: 3-column layout (reading context / question / 50-cell
-  navigator), server-computed remaining time
-  (`intentos.inicio`, never the browser clock), idempotent incremental answer
-  saving (`PATCH /intentos/:id/respuestas`), training-mode immediate feedback.
+- [x] Exam-taking client core (pulled into Phase 1 above, see that entry for
+  details): server-computed remaining time (never the browser clock),
+  idempotent incremental answer saving (`PATCH /intentos/:id/respuestas`),
+  finalize-with-scoring. Still open from this bullet: the 3-column layout
+  with a reading-context panel (current UI is a simpler single-question +
+  navigator layout, no shared-passage grouping since no seed question uses
+  one yet) and training-mode immediate feedback.
 - **Offline resilience is mandatory in this phase, not optional** (decided
   2026-09-07 — the computer lab's internet is unreliable): the exam client
   buffers answers in IndexedDB and resends on reconnect against the same
