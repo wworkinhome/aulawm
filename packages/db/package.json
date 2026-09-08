@@ -1,0 +1,15 @@
+{
+  "name": "@aulawm/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate-types": "supabase gen types typescript --project-id \"$SUPABASE_PROJECT_ID\" --schema public > src/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

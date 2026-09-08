@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "@aulawm/tokens/css";
+
+/* Maps Tailwind v4's theme (and therefore utility classes like bg-ground,
+   text-lime, font-sans, rounded-card) onto AulaWM's own design tokens from
+   @aulawm/tokens/css, imported above. See ARCHITECTURE.md and the design
+   handoff's tokens/tokens.css for what each token means. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-ground-deep: var(--ground-deep);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-panel-3: var(--panel-3);
+
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-lime: var(--lime);
+  --color-lime-hover: var(--lime-hover);
+  --color-warn: var(--warn);
+  --color-warn-text: var(--warn-text);
+
+  /* --font-sans/--font-mono here (not in tokens.css) point at the
+     next/font-managed, self-hosted Archivo/Azeret Mono set up in
+     app/layout.tsx — never at a bare "Archivo"/"Azeret Mono" family name,
+     which wouldn't resolve to anything now that the prototype's Google
+     Fonts @import has been removed from tokens.css. */
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-azeret-mono), monospace;
+
+  --radius-badge: var(--r-badge);
+  --radius-cell: var(--r-cell);
+  --radius-control: var(--r-control);
+  --radius-row: var(--r-row);
+  --radius-card: var(--r-card);
+  --radius-panel: var(--r-panel);
+  --radius-header: var(--r-header);
+  --radius-chip: var(--r-chip);
+  --radius-avatar: var(--r-avatar);
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  background-image: var(--grad-app);
+}

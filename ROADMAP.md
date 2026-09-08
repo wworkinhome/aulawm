@@ -36,29 +36,41 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
 (lesson videos can link to unlisted YouTube as a zero-cost bridge until
 [ADR-0011](docs/adr/0011-video-hosting.md)'s provider is chosen).
 
-- Scaffold the monorepo: `apps/web` (Next.js 15), `apps/api` (NestJS 11),
+- [x] Scaffold the monorepo: `apps/web` (Next.js), `apps/api` (NestJS),
   `packages/db`, `packages/shared`, `packages/tokens`, `supabase/migrations` —
   per [ARCHITECTURE.md §5](ARCHITECTURE.md#5-repository-structure-monorepo-pnpm--turborepo).
-- Port `sql/schema.sql` §1–2 (identidad y organización, contenido) as the first
-  real migrations; register the Supabase Auth custom access token hook
-  ([ADR-0009](docs/adr/0009-supabase-auth.md)).
-- Auth: Supabase Auth email/password, registration → `matriculas.estado =
+  Builds, lints, and `turbo run build` pass across all 5 workspace packages.
+- [x] Port `sql/schema.sql` (all sections) as the first migration
+  (`supabase/migrations/20260101000000_initial_schema.sql`). Not yet applied
+  to a real Supabase project — no project exists yet — and the custom access
+  token hook it depends on ([ADR-0009](docs/adr/0009-supabase-auth.md)) is
+  not yet registered anywhere; both are needed before real login works.
+- [ ] Auth: Supabase Auth email/password, registration → `matriculas.estado =
   'pendiente'` → teacher/coordination approval flow, password reset.
-- `JwtSupabaseGuard` + `RolesGuard` + the ownership-check pattern (a teacher
-  endpoint verifies the resource belongs to a group they teach — not just
-  their role).
-- Design System v0 from `tokens/tokens.css`/`tokens.json`: Button, Input, Card,
-  Chip, Switch, Badge, Modal, Toast, Skeleton, Empty/Error states.
-- App shell: top bar, left rail (16 nav items), Alumno/Docente switch — per the
-  prototype's shell spec.
-- Cursos, módulos, clases (video/lectura/lab/quiz), recursos, apuntes,
+- [x] `JwtSupabaseGuard` + `RolesGuard` + `@CurrentUser()`/`@Public()`/`@Roles()`
+  decorators (`apps/api/src/auth/`) — verified end to end with signed test
+  JWTs (public route, authenticated route, role-gated route, invalid-token
+  rejection all behave correctly). Still needed: the ownership-check half of
+  the pattern (a teacher endpoint verifying the resource belongs to a group
+  they teach, not just their role) once a real resource module exists to
+  demonstrate it on.
+- [x] Design System v0 foundation: `@aulawm/tokens` wired into
+  `apps/web/src/app/globals.css` via Tailwind v4's `@theme inline`, fonts
+  self-hosted via `next/font/google` (Archivo, Azeret Mono), verified
+  rendering correctly in-browser. Component library itself (Button, Input,
+  Card, Chip, Switch, Badge, Modal, Toast, Skeleton, Empty/Error states) not
+  yet built.
+- [ ] App shell: top bar, left rail (16 nav items), Alumno/Docente switch — per
+  the prototype's shell spec.
+- [ ] Cursos, módulos, clases (video/lectura/lab/quiz), recursos, apuntes,
   progreso_clase.
-- Asignaciones + entregas (file submission via `POST /storage/url-subida` +
+- [ ] Asignaciones + entregas (file submission via `POST /storage/url-subida` +
   `POST /asignaciones/:id/entregas`), teacher review/feedback.
-- Gradebook: `ponderaciones`, `calificaciones`, `notas_definitivas` (trigger-
+- [ ] Gradebook: `ponderaciones`, `calificaciones`, `notas_definitivas` (trigger-
   recalculated per the schema), planilla UI with sticky first column.
-- Teacher panel v0 (KPIs, submissions to grade).
-- CI: lint, typecheck, unit tests on every PR.
+- [ ] Teacher panel v0 (KPIs, submissions to grade).
+- [ ] CI: lint, typecheck, unit tests on every PR (no git host/remote yet to
+  attach CI to — see [TD-007](TECHNICAL_DEBT.md)).
 
 ## Phase 2 — ICFES (est. 3–4 weeks)
 

@@ -106,10 +106,21 @@ Key points:
 
 ## 4. Tech stack (per the design handoff)
 
+> **Versions actually scaffolded in Phase 1 (2026-09-07):** `create-next-app@latest`
+> and `@nestjs/cli@latest` installed **Next.js 16** (App Router, React 19.2,
+> Turbopack stable/default) and **NestJS 12**, not the handoff's Next.js
+> 15/Nest 11 — those were current when the handoff was written, and both are
+> straightforward point-ahead upgrades with no architectural impact here.
+> Two Next.js 16 specifics do affect how routes get built later: the
+> `middleware.ts` convention is renamed `proxy.ts`, and dynamic `params`/
+> `searchParams`/`cookies()`/`headers()` are async-only (no sync compat) — see
+> `apps/web/node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md`
+> for the full list before writing route code that touches any of those.
+
 | Layer | Choice | Notes |
 |---|---|---|
-| Frontend | Next.js 15 (App Router, React 19, TS) + Tailwind | SSR for dashboards, Server Components for listings, streaming for large tables |
-| Backend | NestJS 11, REST, TypeScript | Domain modules, role guards, `class-validator` DTOs |
+| Frontend | Next.js (App Router, React 19, TS) + Tailwind | SSR for dashboards, Server Components for listings, streaming for large tables |
+| Backend | NestJS, REST, TypeScript | Domain modules, role guards, `class-validator` DTOs |
 | Database | Supabase Postgres | Single provider for Postgres + Auth + Storage + Realtime |
 | Auth | **Supabase Auth** (email/password + optional institutional SSO) | JWT verifiable in Nest without Nest owning the credential store — see [ADR-0009](docs/adr/0009-supabase-auth.md) (supersedes [ADR-0002](docs/adr/0002-authentication-strategy.md)) |
 | Files | Supabase Storage | Private buckets (`material`, `entregas`, `avatares`), signed URLs only |
