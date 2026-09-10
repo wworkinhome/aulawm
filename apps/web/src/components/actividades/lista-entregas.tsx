@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { DescargarArchivoBoton } from "./archivos-entrega";
+
+type Archivo = { id: string; nombre: string; mime: string | null; bytes: number | null };
 
 type Entrega = {
   entregaId: string;
@@ -10,6 +13,7 @@ type Entrega = {
   estado: string;
   comentario: string | null;
   entregadaEn: string | null;
+  archivos: Archivo[];
   valor: number | null;
   retroalimentacion: string | null;
 };
@@ -80,6 +84,13 @@ function FilaEntrega({
         <p className="mt-1 font-mono text-[10.5px] text-ink/45">
           Entregada: {new Date(entrega.entregadaEn).toLocaleString("es-CO")}
         </p>
+      ) : null}
+      {entrega.archivos.length > 0 ? (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {entrega.archivos.map((a) => (
+            <DescargarArchivoBoton key={a.id} archivoId={a.id} nombre={a.nombre} />
+          ))}
+        </div>
       ) : null}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">

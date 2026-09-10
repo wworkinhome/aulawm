@@ -133,9 +133,9 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   offline answer buffering (mandatory per the decision below, not yet
   built), `intento.expirar` background job, and the results/histogram view
   for teachers.
-- [x] **Asignaciones + entregas + calificación** (text-comment submissions
-  only — file upload is the one part of this bullet still open, see below):
-  new `apps/api/src/asignaciones` module owns every domain write per
+- [x] **Asignaciones + entregas + calificación** (text and file
+  submissions both work now): new `apps/api/src/asignaciones` module owns
+  every domain write per
   ADR-0008 (create, publish-on-create, submit, grade), while listing an
   already-published asignación and a student's own entrega/calificación
   stay direct-Supabase reads against the existing `entregas_propias`/
@@ -155,10 +155,22 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   automatically on the `calificaciones` insert — Nest never computes the
   weighted average itself, it only writes the raw grade (see the new
   `ponderaciones` seed rows added so the trigger has weights to work with).
-  Still open: `entrega_archivos` file upload (needs a signed-upload-URL
-  Nest endpoint per ADR-0008, not yet built), and a full teacher planilla
-  grid (today's grading view is per-assignment, not all-students ×
-  all-assignments).
+  **File upload** (`entrega_archivos`) went through Nest per ADR-0006's
+  explicit exception for anything "requiring content inspection before
+  acceptance" — files are proxied through the API (`multer`, 15 MB limit),
+  not a client-direct pre-signed upload, because content has to be sniffed
+  from actual bytes (`file-type`, magic numbers) before it's accepted, never
+  trusting the client-declared MIME type. Verified with a fake `.exe`
+  renamed and declared as `application/pdf`: rejected, because its real
+  magic bytes don't match anything on the allow-list. Storage paths use
+  only a generated UUID (`entregas/{asignacionId}/{estudianteId}/{uuid}`),
+  never the user-supplied filename, per ADR-0006's path-traversal note.
+  Downloads are short-lived signed URLs issued by
+  `GET /entrega-archivos/:id/url` after an ownership check (the owning
+  student, or the docente teaching that curso) — confirmed a second
+  student gets 404 trying another student's file id. Still open: a full
+  teacher planilla grid (today's grading view is per-assignment, not
+  all-students × all-assignments).
 - [ ] Recursos, apuntes (file resources attached to a clase/curso).
 - [ ] Teacher panel v0 (KPIs, submissions to grade) beyond the per-assignment
   grading view above.

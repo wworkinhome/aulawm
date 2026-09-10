@@ -13,10 +13,14 @@ export async function apiFetch(path: string, init?: RequestInit) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // FormData (file uploads) must NOT get a Content-Type here — the browser
+  // sets its own multipart boundary. Only default to JSON otherwise.
+  const isFormData = init?.body instanceof FormData;
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(init?.headers ?? {}),
       Authorization: `Bearer ${session?.access_token ?? ""}`,
     },

@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { RequestUser } from '@aulawm/shared';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -37,6 +49,35 @@ export class AsignacionesController {
     @CurrentUser() user: RequestUser,
   ) {
     return this.asignaciones.listarEntregas(id, user);
+  }
+
+  @Post('asignaciones/:id/entregas/archivo')
+  @UseInterceptors(FileInterceptor('archivo', { limits: { fileSize: 15 * 1024 * 1024 } }))
+  subirArchivo(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() archivo: Express.Multer.File | undefined,
+    @CurrentUser() user: RequestUser,
+  ) {
+    if (!archivo) {
+      throw new BadRequestException('No se recibió ningún archivo');
+    }
+    return this.asignaciones.subirArchivo(id, user, archivo);
+  }
+
+  @Get('asignaciones/:id/mis-archivos')
+  misArchivos(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: RequestUser,
+  ) {
+    return this.asignaciones.misArchivos(id, user);
+  }
+
+  @Get('entrega-archivos/:id/url')
+  obtenerUrlArchivo(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: RequestUser,
+  ) {
+    return this.asignaciones.obtenerUrlArchivo(id, user);
   }
 
   @Roles('docente', 'coordinacion')

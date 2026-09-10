@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth/current-user";
 import { EntregarForm } from "@/components/actividades/entregar-form";
+import { ArchivosEntrega } from "@/components/actividades/archivos-entrega";
 
 const ESTADO_LABEL: Record<string, { label: string; className: string }> = {
   pendiente: { label: "Pendiente", className: "bg-white/10 text-ink/60" },
@@ -101,6 +102,7 @@ export default async function ActividadDetallePage({
                 {calificacion.retroalimentacion}
               </p>
             ) : null}
+            <ArchivosEntrega asignacionId={asignacion.id} />
           </div>
         ) : (
           <>
@@ -112,6 +114,7 @@ export default async function ActividadDetallePage({
                 {entrega.comentario}
               </p>
             ) : null}
+            <ArchivosEntrega asignacionId={asignacion.id} />
             <EntregarForm
               asignacionId={asignacion.id}
               comentarioInicial={entrega?.comentario ?? ""}

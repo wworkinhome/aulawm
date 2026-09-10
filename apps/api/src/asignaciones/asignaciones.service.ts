@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+import { fileTypeFromBuffer } from 'file-type';
 import { SupabaseAdminService } from '../supabase/supabase-admin.service.js';
 import type { RequestUser } from '@aulawm/shared';
 import type { CrearAsignacionDto } from './dto/crear-asignacion.dto.js';
@@ -16,6 +19,25 @@ type Asignacion = {
   aceptar_tarde: boolean;
   publicada: boolean;
 };
+
+const TAMANO_MAXIMO_BYTES = 15 * 1024 * 1024;
+
+// Sniffed via magic bytes (file-type), never the client-declared
+// Content-Type — see ADR-0006. Formats file-type can't detect from bytes
+// alone (csv, plain text) are allowed only by declared type as a narrow
+// exception, since a submission is prose more often than a binary format.
+const MIME_CON_MAGIC_BYTES = new Set([
+  'application/pdf',
+  'application/zip',
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+]);
+const MIME_SIN_MAGIC_BYTES = new Set(['text/plain', 'text/csv']);
 
 /**
  * Domain writes for tareas/talleres, per ADR-0008: creating, publishing,
@@ -125,7 +147,13 @@ export class AsignacionesService {
     }
   }
 
-  async entregar(asignacionId: string, estudiante: RequestUser, comentario?: string) {
+  /** Confirms the asignación is open to this student and returns it, or
+   * throws — shared by both the text and file submission paths so neither
+   * one can skip the enrollment/window check the other enforces. */
+  private async assertAbiertaParaEstudiante(
+    asignacionId: string,
+    estudianteId: string,
+  ): Promise<Asignacion & { tarde: boolean }> {
     const { data: asignacion } = await this.db
       .from('asignaciones')
       .select('id, curso_id, cierra, aceptar_tarde, publicada')
@@ -136,12 +164,17 @@ export class AsignacionesService {
       throw new NotFoundException('Actividad no encontrada');
     }
 
-    await this.assertInscritoEnCurso(asignacion.curso_id, estudiante.sub);
+    await this.assertInscritoEnCurso(asignacion.curso_id, estudianteId);
 
     const tarde = Date.now() > new Date(asignacion.cierra).getTime();
     if (tarde && !asignacion.aceptar_tarde) {
       throw new ConflictException('La fecha de entrega ya cerró');
     }
+    return { ...asignacion, tarde };
+  }
+
+  async entregar(asignacionId: string, estudiante: RequestUser, comentario?: string) {
+    const { tarde } = await this.assertAbiertaParaEstudiante(asignacionId, estudiante.sub);
 
     const { data, error } = await this.db
       .from('entregas')
@@ -164,6 +197,127 @@ export class AsignacionesService {
     return data;
   }
 
+  /** Get the student's entrega row for this asignación, creating a bare one
+   * (no comentario yet) if this is their first file upload before any text
+   * submission. Never overwrites an existing comentario/estado. */
+  private async obtenerOCrearEntrega(
+    asignacionId: string,
+    estudianteId: string,
+    tarde: boolean,
+  ): Promise<{ id: string }> {
+    const { data: existente } = await this.db
+      .from('entregas')
+      .select('id')
+      .eq('asignacion_id', asignacionId)
+      .eq('estudiante_id', estudianteId)
+      .maybeSingle<{ id: string }>();
+
+    if (existente) {
+      return existente;
+    }
+
+    const { data, error } = await this.db
+      .from('entregas')
+      .insert({
+        asignacion_id: asignacionId,
+        estudiante_id: estudianteId,
+        estado: tarde ? 'tarde' : 'entregada',
+        entregada_en: new Date().toISOString(),
+      })
+      .select('id')
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  }
+
+  async subirArchivo(
+    asignacionId: string,
+    estudiante: RequestUser,
+    archivo: { buffer: Buffer; originalname: string; mimetype: string; size: number },
+  ) {
+    if (archivo.size > TAMANO_MAXIMO_BYTES) {
+      throw new BadRequestException('El archivo supera el límite de 15 MB');
+    }
+
+    const { tarde } = await this.assertAbiertaParaEstudiante(asignacionId, estudiante.sub);
+
+    // Content sniffed from the actual bytes, never the client-declared
+    // mimetype — a renamed .exe claiming to be a PDF is caught here.
+    const detectado = await fileTypeFromBuffer(archivo.buffer);
+    let mimeReal: string;
+    if (detectado && MIME_CON_MAGIC_BYTES.has(detectado.mime)) {
+      mimeReal = detectado.mime;
+    } else if (!detectado && MIME_SIN_MAGIC_BYTES.has(archivo.mimetype)) {
+      mimeReal = archivo.mimetype;
+    } else {
+      throw new BadRequestException(
+        'Tipo de archivo no permitido (PDF, Word, Excel, PowerPoint, imagen, ZIP o texto plano)',
+      );
+    }
+
+    const entrega = await this.obtenerOCrearEntrega(asignacionId, estudiante.sub, tarde);
+
+    // Path uses only a generated id, never the user-supplied filename —
+    // ADR-0006, defends against path traversal via a crafted name.
+    const storagePath = `${asignacionId}/${estudiante.sub}/${randomUUID()}`;
+
+    const { error: errorSubida } = await this.db.storage
+      .from('entregas')
+      .upload(storagePath, archivo.buffer, { contentType: mimeReal, upsert: false });
+    if (errorSubida) {
+      throw errorSubida;
+    }
+
+    const { data, error } = await this.db
+      .from('entrega_archivos')
+      .insert({
+        entrega_id: entrega.id,
+        nombre: archivo.originalname,
+        storage_path: storagePath,
+        mime: mimeReal,
+        bytes: archivo.size,
+      })
+      .select('id, nombre, mime, bytes, subido_en')
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data;
+  }
+
+  async obtenerUrlArchivo(archivoId: string, user: RequestUser) {
+    const { data: archivo } = await this.db
+      .from('entrega_archivos')
+      .select('storage_path, entregas(estudiante_id, asignacion_id)')
+      .eq('id', archivoId)
+      .maybeSingle<{
+        storage_path: string;
+        entregas: { estudiante_id: string; asignacion_id: string } | null;
+      }>();
+
+    if (!archivo || !archivo.entregas) {
+      throw new NotFoundException('Archivo no encontrado');
+    }
+
+    const esDueno = archivo.entregas.estudiante_id === user.sub;
+    if (!esDueno) {
+      await this.obtenerAsignacionDelDocente(archivo.entregas.asignacion_id, user.sub);
+    }
+
+    const { data, error } = await this.db.storage
+      .from('entregas')
+      .createSignedUrl(archivo.storage_path, 60);
+
+    if (error || !data) {
+      throw error ?? new NotFoundException('No se pudo generar el enlace');
+    }
+    return { url: data.signedUrl };
+  }
+
   private async obtenerAsignacionDelDocente(asignacionId: string, docenteId: string) {
     const { data: asignacion } = await this.db
       .from('asignaciones')
@@ -183,7 +337,9 @@ export class AsignacionesService {
     const [{ data: entregas }, { data: calificaciones }] = await Promise.all([
       this.db
         .from('entregas')
-        .select('id, estudiante_id, estado, comentario, entregada_en, perfiles!estudiante_id(nombres, apellidos)')
+        .select(
+          'id, estudiante_id, estado, comentario, entregada_en, perfiles!estudiante_id(nombres, apellidos), entrega_archivos(id, nombre, mime, bytes)',
+        )
         .eq('asignacion_id', asignacionId),
       this.db
         .from('calificaciones')
@@ -208,10 +364,31 @@ export class AsignacionesService {
         estado: e.estado,
         comentario: e.comentario,
         entregadaEn: e.entregada_en,
+        archivos: e.entrega_archivos ?? [],
         valor: calificacion?.valor ?? null,
         retroalimentacion: calificacion?.retroalimentacion ?? null,
       };
     });
+  }
+
+  async misArchivos(asignacionId: string, estudiante: RequestUser) {
+    const { data: entrega } = await this.db
+      .from('entregas')
+      .select('id')
+      .eq('asignacion_id', asignacionId)
+      .eq('estudiante_id', estudiante.sub)
+      .maybeSingle<{ id: string }>();
+
+    if (!entrega) {
+      return [];
+    }
+
+    const { data } = await this.db
+      .from('entrega_archivos')
+      .select('id, nombre, mime, bytes, subido_en')
+      .eq('entrega_id', entrega.id);
+
+    return data ?? [];
   }
 
   async calificar(
