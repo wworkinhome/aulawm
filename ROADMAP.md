@@ -162,8 +162,11 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
 - [ ] Recursos, apuntes (file resources attached to a clase/curso).
 - [ ] Teacher panel v0 (KPIs, submissions to grade) beyond the per-assignment
   grading view above.
-- [ ] CI: lint, typecheck, unit tests on every PR (no git host/remote yet to
-  attach CI to — see [TD-007](TECHNICAL_DEBT.md)).
+- [ ] CI: `.github/workflows/ci.yml` is written (build + lint on every push
+  to `main` and every PR) but not yet pushed — the `gh` CLI's stored token
+  lacks the `workflow` scope GitHub requires to accept a push that touches
+  `.github/workflows/*`, and re-authorizing needs the user to complete a
+  device-flow login in their own browser. See [TD-007](TECHNICAL_DEBT.md).
 
 ## Phase 2 — ICFES (est. 3–4 weeks)
 

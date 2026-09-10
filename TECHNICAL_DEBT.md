@@ -66,13 +66,22 @@ section with the date, don't just delete it).
   first.
 - **Priority**: Before any production launch with real student/grade data.
 
-### TD-007: No CI/CD pipeline configured yet
-- **Description**: No git host/repository exists yet for this project (local
-  directory only at Phase 0); no lint/test/build pipeline is running.
-- **Impact**: No automated quality gate yet; every check is manual today.
-- **Risk**: Low right now (no code exists), rising fast as Phase 1 begins.
-- **Priority**: Must land at the start of Phase 1, alongside the first
-  scaffolding commit.
+### TD-007: CI workflow written but not yet pushed
+- **Description**: `.github/workflows/ci.yml` (build + lint on every push
+  to `main` and every PR, confirmed to need no secrets) exists locally but
+  git rejected the push: `refusing to allow an OAuth App to create or
+  update workflow .github/workflows/ci.yml without workflow scope`. The
+  `gh` CLI's stored token only has `gist`, `read:org`, `repo` — adding
+  `workflow` requires `gh auth refresh -s workflow`, which is a device-flow
+  login only the user can complete (open github.com/login/device, enter the
+  code, approve) — same category of "needs a human in the loop" as the
+  earlier GitHub CLI Authorize-button issue in
+  [ADR-0013](docs/adr/0013-render-over-railway.md).
+- **Impact**: No automated build/lint gate on PRs yet; still fully manual.
+- **Risk**: Low — the workflow file is correct and tested locally
+  (`pnpm build`/`pnpm lint` both pass), just not live on GitHub.
+- **Priority**: Push it the next time the user completes the `gh auth
+  refresh -s workflow` device-flow login.
 
 ### TD-008: Minors' data protection compliance not implemented
 - **Description**: The design handoff's schema already includes a
@@ -202,6 +211,7 @@ section with the date, don't just delete it).
   (`grant ... on all tables in schema public` + `alter default privileges`
   so future tables get it automatically). See
   [ADR-0008](docs/adr/0008-hybrid-data-access.md) for the full explanation.
+
 
 ### TD (resolved 2026-09-08): `service_role` was missing the same base GRANT
 - **Description**: TD-015's fix (migration 000005) granted table access to
