@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth/current-user";
 import { MarcarCompletadaButton } from "@/components/cursos/marcar-completada-button";
+import { DescargarRecursoBoton } from "@/components/recursos/descargar-recurso-boton";
 
 const TIPO_BADGE: Record<string, { label: string; className: string }> = {
   video: { label: "VIDEO", className: "bg-accent/[.18] text-accent" },
@@ -65,6 +66,11 @@ export default async function ClaseDetallePage({
     .eq("estudiante_id", user.id)
     .maybeSingle();
 
+  const { data: recursos } = await supabase
+    .from("recursos")
+    .select("id, titulo, tipo, url_externa")
+    .eq("clase_id", claseId);
+
   const badge = TIPO_BADGE[clase.tipo] ?? TIPO_BADGE.quiz;
 
   return (
@@ -121,6 +127,31 @@ export default async function ClaseDetallePage({
             segundoAlcanzado={clase.duracion_seg ?? 0}
           />
         </div>
+
+        {(recursos ?? []).length > 0 ? (
+          <div className="mt-5 border-t border-white/[.08] pt-4">
+            <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-ink/55">
+              Material de apoyo
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {(recursos ?? []).map((r) =>
+                r.url_externa ? (
+                  <a
+                    key={r.id}
+                    href={r.url_externa}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-[7px] border border-white/[.14] px-2.5 py-1 text-[11px] font-semibold text-ink/75 hover:border-accent"
+                  >
+                    ↗ {r.titulo}
+                  </a>
+                ) : (
+                  <DescargarRecursoBoton key={r.id} recursoId={r.id} titulo={r.titulo} />
+                ),
+              )}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-5 flex items-center justify-between">

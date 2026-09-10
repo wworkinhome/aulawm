@@ -171,7 +171,26 @@ Ships a usable LMS even without the sandbox or an owned video pipeline
   student gets 404 trying another student's file id. Still open: a full
   teacher planilla grid (today's grading view is per-assignment, not
   all-students × all-assignments).
-- [ ] Recursos, apuntes (file resources attached to a clase/curso).
+- [x] **Recursos** (material de apoyo por clase — file or external link):
+  new `apps/api/src/recursos` module handles both creation paths (`POST
+  /clases/:id/recursos/archivo` reusing the same `file-type` sniffing +
+  15 MB limit as entregas, now factored into a shared
+  `apps/api/src/storage/validar-archivo.ts` so both services validate
+  identically; `POST /clases/:id/recursos/enlace` for an external URL).
+  Listing stays a direct-Supabase read via the new `recursos_visibles` RLS
+  policy (migration 000012) — same shape as `clases_visibles`: docente sees
+  everything on their own cursos, student sees resources on published
+  clases they're enrolled in. Downloads go through
+  `GET /recursos/:id/url` (signed, ownership-checked) — the RLS policy
+  never exposes a usable `storage_path` for direct client reads, matching
+  ADR-0006. `/panel/contenido` (docente: curso → módulo → clase tree, an
+  "Adjuntar material" form per clase) and the student's
+  `/cursos/[id]/clases/[claseId]` page (renders attached resources,
+  external links open directly, files go through the signed-URL button).
+  Verified end to end: attached a real link and a real file via the actual
+  API, confirmed Sara can read the resource metadata and fetch a signed
+  download URL via the exact queries her pages run. `apuntes` (student
+  notes timestamped to a video) still not built.
 - [ ] Teacher panel v0 (KPIs, submissions to grade) beyond the per-assignment
   grading view above.
 - [ ] CI: `.github/workflows/ci.yml` is written (build + lint on every push

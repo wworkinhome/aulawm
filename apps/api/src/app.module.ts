@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { ExamenesModule } from './examenes/examenes.module.js';
 import { ProgresoModule } from './progreso/progreso.module.js';
 import { AsignacionesModule } from './asignaciones/asignaciones.module.js';
+import { RecursosModule } from './recursos/recursos.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AsignacionesModule } from './asignaciones/asignaciones.module.js';
     ExamenesModule,
     ProgresoModule,
     AsignacionesModule,
+    RecursosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

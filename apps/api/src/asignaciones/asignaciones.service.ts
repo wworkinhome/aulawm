@@ -1,13 +1,12 @@
 import {
-  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { fileTypeFromBuffer } from 'file-type';
 import { SupabaseAdminService } from '../supabase/supabase-admin.service.js';
+import { assertTamanoPermitido, sniffearMimePermitido } from '../storage/validar-archivo.js';
 import type { RequestUser } from '@aulawm/shared';
 import type { CrearAsignacionDto } from './dto/crear-asignacion.dto.js';
 
@@ -19,25 +18,6 @@ type Asignacion = {
   aceptar_tarde: boolean;
   publicada: boolean;
 };
-
-const TAMANO_MAXIMO_BYTES = 15 * 1024 * 1024;
-
-// Sniffed via magic bytes (file-type), never the client-declared
-// Content-Type — see ADR-0006. Formats file-type can't detect from bytes
-// alone (csv, plain text) are allowed only by declared type as a narrow
-// exception, since a submission is prose more often than a binary format.
-const MIME_CON_MAGIC_BYTES = new Set([
-  'application/pdf',
-  'application/zip',
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-]);
-const MIME_SIN_MAGIC_BYTES = new Set(['text/plain', 'text/csv']);
 
 /**
  * Domain writes for tareas/talleres, per ADR-0008: creating, publishing,
@@ -238,25 +218,13 @@ export class AsignacionesService {
     estudiante: RequestUser,
     archivo: { buffer: Buffer; originalname: string; mimetype: string; size: number },
   ) {
-    if (archivo.size > TAMANO_MAXIMO_BYTES) {
-      throw new BadRequestException('El archivo supera el límite de 15 MB');
-    }
+    assertTamanoPermitido(archivo.size);
 
     const { tarde } = await this.assertAbiertaParaEstudiante(asignacionId, estudiante.sub);
 
     // Content sniffed from the actual bytes, never the client-declared
     // mimetype — a renamed .exe claiming to be a PDF is caught here.
-    const detectado = await fileTypeFromBuffer(archivo.buffer);
-    let mimeReal: string;
-    if (detectado && MIME_CON_MAGIC_BYTES.has(detectado.mime)) {
-      mimeReal = detectado.mime;
-    } else if (!detectado && MIME_SIN_MAGIC_BYTES.has(archivo.mimetype)) {
-      mimeReal = archivo.mimetype;
-    } else {
-      throw new BadRequestException(
-        'Tipo de archivo no permitido (PDF, Word, Excel, PowerPoint, imagen, ZIP o texto plano)',
-      );
-    }
+    const mimeReal = await sniffearMimePermitido(archivo.buffer, archivo.mimetype);
 
     const entrega = await this.obtenerOCrearEntrega(asignacionId, estudiante.sub, tarde);
 
